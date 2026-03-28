@@ -1,0 +1,38 @@
+import { baseApi } from './baseApi';
+import type { ApiResponse, PaginatedApiResponse, Product } from '@/shared/types';
+
+interface ProductsQuery {
+  page?: number;
+  limit?: number;
+  category?: string;
+  search?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  isFeatured?: string;
+  sortBy?: string;
+  sortOrder?: string;
+}
+
+export const productApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getProducts: builder.query<PaginatedApiResponse<Product>, ProductsQuery | void>({
+      query: (params) => ({ url: '/products', params: params || {} }),
+      providesTags: (result) =>
+        result?.data
+          ? [...result.data.map(({ id }) => ({ type: 'Product' as const, id })), 'Product']
+          : ['Product'],
+    }),
+    getProduct: builder.query<Product, string>({
+      query: (id) => `/products/${id}`,
+      transformResponse: (res: ApiResponse<Product>) => res.data,
+      providesTags: (_r, _e, id) => [{ type: 'Product', id }],
+    }),
+    getProductBySlug: builder.query<Product, string>({
+      query: (slug) => `/products/slug/${slug}`,
+      transformResponse: (res: ApiResponse<Product>) => res.data,
+      providesTags: (result) => result ? [{ type: 'Product', id: result.id }] : [],
+    }),
+  }),
+});
+
+export const { useGetProductsQuery, useGetProductQuery, useGetProductBySlugQuery } = productApi;
