@@ -31,24 +31,24 @@ export function CTASection({ locale }: { locale: Locale }) {
   const c = content[locale];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-primary to-blue-700">
+    <section className="py-20 bg-primary">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className="text-center max-w-xl mx-auto"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-white">{c.title}</h2>
-          <p className="mt-4 text-lg text-blue-100 max-w-xl mx-auto">{c.desc}</p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">{c.title}</h2>
+          <p className="mt-4 text-base text-blue-100/80">{c.desc}</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href={`/${locale}/products`}>
-              <Button size="lg" variant="secondary" icon={<ArrowRight className="h-5 w-5" />}>
+              <Button size="lg" variant="secondary" icon={<ArrowRight className="h-4 w-4" />}>
                 {c.cta}
               </Button>
             </Link>
             <a href="tel:+998711234567">
-              <Button size="lg" variant="ghost" className="text-white border-2 border-white/30 hover:bg-white/10 hover:text-white" icon={<Phone className="h-5 w-5" />}>
+              <Button size="lg" variant="ghost" className="text-white border border-white/25 hover:bg-white/10 hover:text-white" icon={<Phone className="h-4 w-4" />}>
                 {c.phone}
               </Button>
             </a>

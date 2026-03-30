@@ -50,29 +50,29 @@ export function WhyUs({ locale }: { locale: Locale }) {
     <section className="py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-14"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">{c.title}</h2>
-          <p className="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">{c.subtitle}</p>
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">{c.title}</h2>
+          <p className="mt-3 text-base text-slate-500 max-w-2xl mx-auto">{c.subtitle}</p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {c.features.map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
-              className="group relative rounded-2xl border border-slate-200 bg-white p-8 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/30"
+              transition={{ delay: i * 0.06 }}
+              className="group rounded-xl border border-slate-200/80 bg-white p-6 transition-all duration-200 hover:shadow-md hover:shadow-slate-200/40 hover:border-slate-300"
             >
-              <div className="mb-5 inline-flex rounded-xl bg-primary/10 p-3 transition-colors group-hover:bg-primary group-hover:text-white">
-                <feature.icon className="h-6 w-6 text-primary group-hover:text-white transition-colors" />
+              <div className="mb-4 inline-flex rounded-lg bg-primary/[0.06] p-2.5 transition-colors duration-200 group-hover:bg-primary">
+                <feature.icon className="h-5 w-5 text-primary group-hover:text-white transition-colors" />
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">{feature.title}</h3>
+              <h3 className="text-base font-semibold text-slate-900 mb-1.5">{feature.title}</h3>
               <p className="text-sm text-slate-500 leading-relaxed">{feature.desc}</p>
             </motion.div>
           ))}

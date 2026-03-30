@@ -29,23 +29,23 @@ export function TrustBadges({ locale }: { locale: Locale }) {
   const items = badges[locale];
 
   return (
-    <section className="py-16 bg-white border-y border-slate-100">
+    <section className="py-14 bg-white border-y border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {items.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
+              transition={{ delay: i * 0.08 }}
               className="flex flex-col items-center text-center"
             >
-              <div className="mb-4 rounded-2xl bg-primary/5 p-4">
-                <item.icon className="h-7 w-7 text-primary" />
+              <div className="mb-3 rounded-xl bg-slate-50 p-3.5">
+                <item.icon className="h-6 w-6 text-primary" />
               </div>
               <h3 className="font-semibold text-slate-900 text-sm">{item.title}</h3>
-              <p className="mt-1 text-xs text-slate-500">{item.desc}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{item.desc}</p>
             </motion.div>
           ))}
         </div>

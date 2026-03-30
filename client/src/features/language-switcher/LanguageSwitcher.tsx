@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import type { Locale } from "@/shared/types";
 
 const languages: { code: Locale; label: string; flag: string }[] = [
@@ -37,33 +37,32 @@ export function LanguageSwitcher({ currentLang }: { currentLang: Locale }) {
 
   return (
     <div ref={ref} className="relative">
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+      <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+        className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
       >
         <span className="hidden sm:inline">
           {current.flag} {current.label}
         </span>
         <span className="sm:hidden">{current.flag}</span>
-      </motion.button>
+      </button>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 top-full mt-2 w-44 rounded-xl bg-white border border-slate-200 shadow-xl overflow-hidden z-50"
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.12 }}
+            className="absolute right-0 top-full mt-1.5 w-40 rounded-lg bg-white border border-slate-200 shadow-lg shadow-slate-200/50 overflow-hidden z-50"
           >
             {languages.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => switchLang(lang.code)}
-                className={`flex w-full items-center gap-3 px-4 py-3 text-sm transition-colors ${
+                className={`flex w-full items-center gap-2.5 px-3.5 py-2.5 text-sm transition-colors ${
                   currentLang === lang.code
-                    ? "bg-primary/10 text-primary font-semibold"
+                    ? "bg-primary/[0.06] text-primary font-medium"
                     : "text-slate-600 hover:bg-slate-50"
                 }`}
               >

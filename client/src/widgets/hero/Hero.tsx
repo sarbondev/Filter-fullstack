@@ -15,52 +15,45 @@ interface HeroProps {
 
 export function Hero({ locale, dict }: HeroProps) {
   return (
-    <section className="relative min-h-[92vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50/40 to-white" />
-      <div className="absolute top-10 right-10 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[100px]" />
-      <div className="absolute -bottom-20 -left-20 w-[500px] h-[500px] rounded-full bg-blue-100/60 blur-[100px]" />
-
-      {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: 'radial-gradient(circle, #2563eb 1px, transparent 1px)',
-        backgroundSize: '30px 30px',
-      }} />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white" />
+      <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary/[0.03] blur-[80px]" />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Text */}
           <div>
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5 }}
             >
-              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary mb-6">
+              <span className="inline-flex items-center gap-2 rounded-md bg-primary/[0.06] px-3 py-1 text-[13px] font-medium text-primary mb-6">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                 FilterSystem Factory
               </span>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold text-slate-900 leading-[1.1] tracking-tight">
+              <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-slate-900 leading-[1.1]">
                 {dict.hero.title}
-                <span className="block bg-gradient-to-r from-primary to-blue-500 bg-clip-text text-transparent mt-2">
+                <span className="block text-primary mt-2">
                   {dict.hero.subtitle}
                 </span>
               </h1>
 
-              <p className="mt-6 text-lg text-slate-500 max-w-xl leading-relaxed">
+              <p className="mt-6 text-base text-slate-500 max-w-lg leading-relaxed">
                 {dict.hero.description}
               </p>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-10 flex flex-wrap gap-4"
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="mt-8 flex flex-wrap gap-3"
             >
               <Link href={`/${locale}/products`}>
-                <Button size="lg" icon={<ArrowRight className="h-5 w-5" />}>
+                <Button size="lg" icon={<ArrowRight className="h-4 w-4" />}>
                   {dict.hero.shopNow}
                 </Button>
               </Link>
@@ -75,7 +68,7 @@ export function Hero({ locale, dict }: HeroProps) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-14 flex gap-10 sm:gap-14"
             >
               {[
@@ -84,39 +77,39 @@ export function Hero({ locale, dict }: HeroProps) {
                 { value: '99%', label: dict.hero.stats.satisfaction },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <div className="text-3xl sm:text-4xl font-bold text-slate-900">{stat.value}</div>
-                  <div className="mt-1 text-sm text-slate-400 font-medium">{stat.label}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-slate-900">{stat.value}</div>
+                  <div className="mt-1 text-sm text-slate-400">{stat.label}</div>
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Right Visual — Image + Floating Cards */}
+          {/* Right Visual */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
+            initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
             className="hidden lg:block relative"
           >
             {/* Main image */}
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border border-slate-200/60">
+            <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-xl shadow-slate-200/40">
               <Image
                 src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&q=80"
                 alt="Industrial filter system"
                 width={600}
                 height={500}
-                className="w-full h-[500px] object-cover"
+                className="w-full h-[480px] object-cover"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
 
-              {/* Overlay text */}
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="rounded-2xl bg-white/90 backdrop-blur-md p-5 shadow-lg">
-                  <div className="flex items-center gap-4">
+              {/* Overlay */}
+              <div className="absolute bottom-5 left-5 right-5">
+                <div className="rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg">
+                  <div className="flex items-center gap-3">
                     <div className="flex -space-x-2">
                       {['A', 'B', 'C'].map((letter) => (
-                        <div key={letter} className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-white border-2 border-white">
+                        <div key={letter} className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white border-2 border-white">
                           {letter}
                         </div>
                       ))}
@@ -137,49 +130,49 @@ export function Hero({ locale, dict }: HeroProps) {
 
             {/* Floating cards */}
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-4 -right-4 rounded-2xl bg-white shadow-xl border border-slate-100 px-5 py-4"
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-blue-50 p-2.5">
-                  <Droplets className="h-5 w-5 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400">{dict.hero.waterFilters}</p>
-                  <p className="text-sm font-bold text-slate-900">{dict.hero.waterFiltersCount}</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              className="absolute -bottom-2 -left-6 rounded-2xl bg-white shadow-xl border border-slate-100 px-5 py-4"
-            >
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-emerald-50 p-2.5">
-                  <Wind className="h-5 w-5 text-emerald-500" />
-                </div>
-                <div>
-                  <p className="text-xs text-slate-400">{dict.hero.airFilters}</p>
-                  <p className="text-sm font-bold text-slate-900">{dict.hero.airFiltersCount}</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
               animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-              className="absolute top-1/2 -right-8 rounded-2xl bg-white shadow-xl border border-slate-100 px-5 py-4"
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-3 -right-3 rounded-xl bg-white shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3"
             >
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-amber-50 p-2.5">
-                  <Gauge className="h-5 w-5 text-amber-500" />
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-lg bg-blue-50 p-2">
+                  <Droplets className="h-4 w-4 text-blue-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-400">{dict.hero.efficiency}</p>
-                  <p className="text-sm font-bold text-slate-900">99.9%</p>
+                  <p className="text-[11px] text-slate-400">{dict.hero.waterFilters}</p>
+                  <p className="text-sm font-semibold text-slate-900">{dict.hero.waterFiltersCount}</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              className="absolute -bottom-2 -left-4 rounded-xl bg-white shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-lg bg-emerald-50 p-2">
+                  <Wind className="h-4 w-4 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-[11px] text-slate-400">{dict.hero.airFilters}</p>
+                  <p className="text-sm font-semibold text-slate-900">{dict.hero.airFiltersCount}</p>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              className="absolute top-1/2 -right-6 rounded-xl bg-white shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-lg bg-amber-50 p-2">
+                  <Gauge className="h-4 w-4 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-[11px] text-slate-400">{dict.hero.efficiency}</p>
+                  <p className="text-sm font-semibold text-slate-900">99.9%</p>
                 </div>
               </div>
             </motion.div>

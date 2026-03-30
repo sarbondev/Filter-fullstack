@@ -38,36 +38,36 @@ export function Testimonials({ locale }: { locale: Locale }) {
   const c = content[locale];
 
   return (
-    <section className="py-20 bg-slate-50">
+    <section className="py-20 bg-slate-50/70">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-slate-900">{c.title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">{c.title}</h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {c.testimonials.map((t, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="rounded-2xl bg-white border border-slate-200 p-6 transition-all duration-300 hover:shadow-lg"
+              transition={{ delay: i * 0.08 }}
+              className="rounded-xl bg-white border border-slate-200/80 p-5 transition-all duration-200 hover:shadow-md hover:shadow-slate-200/40"
             >
-              <Quote className="h-8 w-8 text-primary/20 mb-4" />
-              <p className="text-sm text-slate-600 leading-relaxed mb-6">{t.text}</p>
+              <Quote className="h-7 w-7 text-primary/15 mb-3" />
+              <p className="text-sm text-slate-600 leading-relaxed mb-5">{t.text}</p>
               <div className="flex gap-0.5 mb-3">
                 {[1, 2, 3, 4, 5].map((s) => (
-                  <Star key={s} className={`h-4 w-4 ${s <= t.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                  <Star key={s} className={`h-3.5 w-3.5 ${s <= t.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                 ))}
               </div>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/[0.06] text-sm font-semibold text-primary">
                   {t.name.charAt(0)}
                 </div>
                 <div>
