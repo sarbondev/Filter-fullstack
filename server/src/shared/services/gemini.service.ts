@@ -37,6 +37,7 @@ export interface TranslateOptions {
 
 export class GeminiService {
   private readonly model: GenerativeModel;
+  private static readonly MAX_RETRIES = 3;
 
   constructor() {
     const client = new GoogleGenerativeAI(env.GEMINI_API_KEY);
@@ -47,6 +48,26 @@ export class GeminiService {
         temperature: 0.2,
       },
     });
+  }
+
+  private async generateWithRetry(prompt: string): Promise<string> {
+    for (let attempt = 1; attempt <= GeminiService.MAX_RETRIES; attempt++) {
+      try {
+        const result = await this.model.generateContent(prompt);
+        return result.response.text();
+      } catch (error) {
+        const msg = error instanceof Error ? error.message : String(error);
+        const isRateLimit = msg.includes("429") || msg.includes("Too Many Requests");
+        if (isRateLimit && attempt < GeminiService.MAX_RETRIES) {
+          const delay = attempt * 5000;
+          logger.warn({ attempt, delay }, "Gemini rate limited — retrying");
+          await new Promise((r) => setTimeout(r, delay));
+          continue;
+        }
+        throw error;
+      }
+    }
+    throw new Error("Gemini: max retries exceeded");
   }
 
   /**
@@ -111,8 +132,7 @@ Required JSON structure:
 ${JSON.stringify(expectedStructure, null, 2)}`;
 
     try {
-      const result = await this.model.generateContent(prompt);
-      const responseText = result.response.text();
+      const responseText = await this.generateWithRetry(prompt);
       logger.debug({ responseText }, "Gemini raw response");
       const parsed = JSON.parse(responseText) as TranslatedOutput<T>;
       logger.info(
@@ -174,8 +194,7 @@ Respond ONLY with valid JSON:
 }`;
 
     try {
-      const result = await this.model.generateContent(prompt);
-      const responseText = result.response.text();
+      const responseText = await this.generateWithRetry(prompt);
       logger.debug({ responseText }, "Gemini category response");
       const parsed = JSON.parse(responseText) as { name: TranslatedField; description: TranslatedField };
       logger.info({ name, context }, "Gemini: category translation successful");

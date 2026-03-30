@@ -14,6 +14,17 @@ const en = {
     description: 'Industrial and household filtration solutions. Water, air, and oil filters manufactured with precision engineering.',
     shopNow: 'Shop Now',
     viewCatalog: 'View Catalog',
+    stats: {
+      products: 'Products',
+      customers: 'Customers',
+      satisfaction: 'Satisfaction',
+    },
+    waterFilters: 'Water Filters',
+    waterFiltersCount: '200+ models',
+    airFilters: 'Air Filters',
+    airFiltersCount: '150+ models',
+    efficiency: 'Efficiency',
+    customersOverlay: '50,000+ customers',
   },
   products: {
     title: 'Our Products',
@@ -36,6 +47,7 @@ const en = {
     priceHighLow: 'Price: High to Low',
     showMore: 'Show More',
     description: 'Description',
+    featuredBadge: 'Featured',
   },
   categories: {
     title: 'Categories',
@@ -71,6 +83,7 @@ const en = {
     address: 'Tashkent, Uzbekistan',
     phone: '+998 71 123 45 67',
     email: 'info@filtersystem.uz',
+    newsletter: 'Stay updated with our latest products and offers.',
   },
   common: {
     loading: 'Loading...',
@@ -99,6 +112,9 @@ const en = {
     hasAccount: 'Already have an account?',
     logout: 'Logout',
     loginRequired: 'Please sign in to continue',
+    passwordHint: 'Min 8 chars, 1 uppercase, 1 number',
+    fieldRequired: 'is required',
+    fieldIncomplete: 'is incomplete',
   },
   checkout: {
     title: 'Checkout',
@@ -114,6 +130,8 @@ const en = {
     card: 'Credit Card',
     bankTransfer: 'Bank Transfer',
     placeOrder: 'Place Order',
+    fillRequired: 'Please fill all required fields',
+    orderFailed: 'Failed to place order',
     orderSuccess: 'Order placed successfully!',
     orderSuccessDesc: 'Your order has been placed. We will contact you shortly.',
     backToHome: 'Back to Home',
@@ -125,6 +143,16 @@ const en = {
     empty: 'No articles yet',
     backToBlog: 'Back to Blog',
     views: 'views',
+  },
+  orders: {
+    statuses: {
+      PENDING: 'Pending',
+      CONFIRMED: 'Confirmed',
+      PROCESSING: 'Processing',
+      SHIPPED: 'Shipped',
+      DELIVERED: 'Delivered',
+      CANCELLED: 'Cancelled',
+    },
   },
   settings: {
     title: 'Settings',

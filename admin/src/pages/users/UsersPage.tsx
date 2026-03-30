@@ -49,7 +49,7 @@ export default function UsersPage() {
       setForm({ phoneNumber: '', password: '', name: '', role: 'CLIENT' });
     } catch (err: unknown) {
       const apiErr = err as { data?: { message?: string } };
-      setErrors({ phoneNumber: apiErr.data?.message || 'Failed to create user' });
+      setErrors({ phoneNumber: apiErr.data?.message || t('users.failedToCreate') });
     }
   };
 

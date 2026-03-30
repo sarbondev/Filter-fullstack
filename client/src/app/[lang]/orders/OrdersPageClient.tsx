@@ -81,7 +81,7 @@ export function OrdersPageClient({ locale, dict }: Props) {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant={statusVariant[order.status] ?? 'default'}>{order.status}</Badge>
+                  <Badge variant={statusVariant[order.status] ?? 'default'}>{dict.orders.statuses[order.status as keyof typeof dict.orders.statuses] || order.status}</Badge>
                   <span className="font-semibold text-slate-900">{formatPrice(order.totalAmount)} UZS</span>
                 </div>
               </div>

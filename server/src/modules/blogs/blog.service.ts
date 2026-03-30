@@ -36,14 +36,24 @@ export class BlogService {
     const slug = await this.generateUniqueSlug(dto.title);
 
     const translations = await geminiService.translate(
-      { title: dto.title, content: dto.content, excerpt: `Write a 1-2 sentence summary of: ${dto.title}` },
+      { title: dto.title, content: dto.content },
       { context: 'blog post for a filter-system factory e-commerce platform' },
     );
 
-    // Use proper excerpt — if Gemini returned the prompt as-is (fallback), generate from content
-    const excerpt = translations.excerpt?.uz !== translations.excerpt?.en
-      ? translations.excerpt
-      : { uz: dto.content.slice(0, 150), ru: dto.content.slice(0, 150), en: dto.content.slice(0, 150) };
+    // Generate excerpt as a separate call with a clear instruction
+    let excerpt;
+    try {
+      excerpt = await geminiService.translateOne(
+        dto.content.slice(0, 300),
+        { context: 'Write a 1-2 sentence summary/excerpt of this blog post content for a filter-system factory e-commerce platform' },
+      );
+    } catch {
+      excerpt = {
+        uz: dto.content.slice(0, 150),
+        ru: dto.content.slice(0, 150),
+        en: dto.content.slice(0, 150),
+      };
+    }
 
     const blog = await this.blogRepository.create({
       slug,

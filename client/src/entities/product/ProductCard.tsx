@@ -91,7 +91,7 @@ export function ProductCard({
             {/* Badges */}
             <div className="absolute top-3 left-3 flex flex-col gap-2">
               {discount > 0 && <Badge variant="danger">-{discount}%</Badge>}
-              {product.isFeatured && <Badge variant="primary">Featured</Badge>}
+              {product.isFeatured && <Badge variant="primary">{dict.products.featuredBadge}</Badge>}
             </div>
 
             {/* Wishlist */}

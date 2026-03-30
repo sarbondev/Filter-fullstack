@@ -67,11 +67,17 @@ export default function OrdersPage() {
   };
 
   const handleStatusChange = async (orderId: string, status: string) => {
-    await updateStatus({ id: orderId, status });
+    try {
+      const updated = await updateStatus({ id: orderId, status }).unwrap();
+      setViewOrder((prev) => prev ? { ...prev, ...updated } : prev);
+    } catch { /* error handled by RTK Query */ }
   };
 
   const handlePaymentChange = async (orderId: string, paymentStatus: string) => {
-    await updatePayment({ id: orderId, paymentStatus });
+    try {
+      const updated = await updatePayment({ id: orderId, paymentStatus }).unwrap();
+      setViewOrder((prev) => prev ? { ...prev, ...updated } : prev);
+    } catch { /* error handled by RTK Query */ }
   };
 
   return (
@@ -105,10 +111,10 @@ export default function OrdersPage() {
               <span className="font-medium">{formatPrice(o.totalAmount)}</span>
             )},
             { key: 'status', header: t('common.status'), render: (o) => (
-              <Badge variant={statusVariant[o.status] ?? 'default'}>{o.status}</Badge>
+              <Badge variant={statusVariant[o.status] ?? 'default'}>{t(`orders.statuses.${o.status}`)}</Badge>
             )},
             { key: 'paymentStatus', header: t('orders.paymentStatus'), render: (o) => (
-              <Badge variant={paymentVariant[o.paymentStatus] ?? 'default'}>{o.paymentStatus}</Badge>
+              <Badge variant={paymentVariant[o.paymentStatus] ?? 'default'}>{t(`orders.paymentStatuses.${o.paymentStatus}`)}</Badge>
             )},
             { key: 'date', header: t('common.date'), render: (o) => new Date(o.createdAt).toLocaleDateString() },
             { key: 'actions', header: '', className: 'w-16', render: (o) => (

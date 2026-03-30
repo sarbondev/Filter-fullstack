@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, Loader2, ImagePlus } from 'lucide-react';
 import { useUploadSingleMutation, useUploadMultipleMutation, useDeleteFileMutation } from '@/store/api/uploadApi';
 
@@ -12,6 +13,7 @@ interface ImageUploadProps {
 }
 
 export function ImageUpload({ value, onChange, multiple = false, maxFiles = 10, label, error }: ImageUploadProps) {
+  const { t } = useTranslation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export function ImageUpload({ value, onChange, multiple = false, maxFiles = 10, 
     } catch (err) {
       console.error('Upload failed:', err);
       const apiErr = err as { data?: { message?: string }; status?: number; error?: string };
-      const msg = apiErr.data?.message || apiErr.error || 'Upload failed. Please try again.';
+      const msg = apiErr.data?.message || apiErr.error || t('common.uploadFailed');
       setUploadError(msg);
     }
 
@@ -61,7 +63,7 @@ export function ImageUpload({ value, onChange, multiple = false, maxFiles = 10, 
         await deleteFile(url).unwrap();
       } catch (err) {
         console.error('Delete failed:', err);
-        setUploadError('Failed to delete image. Please try again.');
+        setUploadError(t('common.deleteFailed'));
       }
     }
     onChange(value.filter((_, i) => i !== index));
@@ -125,9 +127,9 @@ export function ImageUpload({ value, onChange, multiple = false, maxFiles = 10, 
           )}
           <div className="text-center">
             <p className="text-sm font-medium text-slate-600">
-              {isLoading ? 'Uploading...' : 'Click or drag to upload'}
+              {isLoading ? t('common.loading') : t('common.uploadClick')}
             </p>
-            <p className="text-xs text-slate-400 mt-1">JPG, PNG, WebP, GIF — max 5MB</p>
+            <p className="text-xs text-slate-400 mt-1">{t('common.uploadFormats')}</p>
           </div>
         </div>
       )}

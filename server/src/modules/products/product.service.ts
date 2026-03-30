@@ -1,11 +1,15 @@
-import { ProductRepository, ProductFilter } from './product.repository';
-import { ProductResponse, toProductResponse } from './product.entity';
-import { CreateProductDto, UpdateProductDto, ProductQueryDto } from './product.schema';
-import { NotFoundError } from '../../shared/middleware/error-handler.middleware';
-import { deleteFiles } from '../upload/upload.service';
-import { geminiService } from '../../shared/services/gemini.service';
-import { PaginatedResponse } from '../../shared/types/common.types';
-import { buildPaginatedResponse } from '../../shared/utils/pagination';
+import { ProductRepository, ProductFilter } from "./product.repository";
+import { ProductResponse, toProductResponse } from "./product.entity";
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  ProductQueryDto,
+} from "./product.schema";
+import { NotFoundError } from "../../shared/middleware/error-handler.middleware";
+import { deleteFiles } from "../upload/upload.service";
+import { geminiService } from "../../shared/services/gemini.service";
+import { PaginatedResponse } from "../../shared/types/common.types";
+import { buildPaginatedResponse } from "../../shared/utils/pagination";
 
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
@@ -14,15 +18,15 @@ export class ProductService {
     return text
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_]+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   }
 
   private async generateUniqueSlug(name: string): Promise<string> {
     let slug = this.slugify(name);
-    if (!slug) slug = 'product';
+    if (!slug) slug = "product";
     let candidate = slug;
     let counter = 0;
     while (await this.productRepository.findBySlug(candidate)) {
@@ -33,9 +37,9 @@ export class ProductService {
   }
 
   private async generateSku(): Promise<string> {
-    const prefix = 'FS';
+    const prefix = "FS";
     const count = await this.productRepository.count();
-    const num = String(count + 1).padStart(6, '0');
+    const num = String(count + 1).padStart(6, "0");
     const sku = `${prefix}-${num}`;
     if (await this.productRepository.findBySku(sku)) {
       const ts = Date.now().toString(36).toUpperCase().slice(-4);
@@ -45,8 +49,8 @@ export class ProductService {
   }
 
   async create(dto: CreateProductDto): Promise<ProductResponse> {
-    const slug = dto.slug || await this.generateUniqueSlug(dto.name);
-    const sku = dto.sku?.toUpperCase() || await this.generateSku();
+    const slug = dto.slug || (await this.generateUniqueSlug(dto.name));
+    const sku = dto.sku?.toUpperCase() || (await this.generateSku());
 
     // Translate text fields
     const translations = await geminiService.translate(
@@ -56,7 +60,10 @@ export class ProductService {
         shortDescription: dto.shortDescription,
         ...(dto.tags ? { tags: dto.tags } : {}),
       },
-      { context: 'filter-system factory product for industrial/household water, air, oil filters' },
+      {
+        context:
+          "filter-system factory product for industrial/household water, air, oil filters",
+      },
     );
 
     // Translate specifications
@@ -64,7 +71,7 @@ export class ProductService {
       dto.specifications.map(async (spec) => {
         const specTranslation = await geminiService.translate(
           { key: spec.key, value: spec.value },
-          { context: 'product technical specification for filters' },
+          { context: "product technical specification for filters" },
         );
         return { key: specTranslation.key, value: specTranslation.value };
       }),
@@ -90,14 +97,18 @@ export class ProductService {
     return toProductResponse(product);
   }
 
-  async findAll(query: ProductQueryDto, page: number, limit: number): Promise<PaginatedResponse<ProductResponse>> {
+  async findAll(
+    query: ProductQueryDto,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResponse<ProductResponse>> {
     const skip = (page - 1) * limit;
     const filter: ProductFilter = {
       isActive: true,
     };
 
     if (query.category) filter.category = query.category;
-    if (query.isFeatured === 'true') filter.isFeatured = true;
+    if (query.isFeatured === "true") filter.isFeatured = true;
     if (query.minPrice) filter.minPrice = parseFloat(query.minPrice);
     if (query.maxPrice) filter.maxPrice = parseFloat(query.maxPrice);
     if (query.search) filter.search = query.search;
@@ -106,19 +117,27 @@ export class ProductService {
       filter,
       skip,
       limit,
-      query.sortBy || 'createdAt',
-      (query.sortOrder as 'asc' | 'desc') || 'desc',
+      query.sortBy || "createdAt",
+      (query.sortOrder as "asc" | "desc") || "desc",
     );
 
-    return buildPaginatedResponse(data.map(toProductResponse), total, { page, limit, skip });
+    return buildPaginatedResponse(data.map(toProductResponse), total, {
+      page,
+      limit,
+      skip,
+    });
   }
 
-  async findAllAdmin(query: ProductQueryDto, page: number, limit: number): Promise<PaginatedResponse<ProductResponse>> {
+  async findAllAdmin(
+    query: ProductQueryDto,
+    page: number,
+    limit: number,
+  ): Promise<PaginatedResponse<ProductResponse>> {
     const skip = (page - 1) * limit;
     const filter: ProductFilter = {};
 
     if (query.category) filter.category = query.category;
-    if (query.isFeatured === 'true') filter.isFeatured = true;
+    if (query.isFeatured === "true") filter.isFeatured = true;
     if (query.minPrice) filter.minPrice = parseFloat(query.minPrice);
     if (query.maxPrice) filter.maxPrice = parseFloat(query.maxPrice);
     if (query.search) filter.search = query.search;
@@ -127,30 +146,34 @@ export class ProductService {
       filter,
       skip,
       limit,
-      query.sortBy || 'createdAt',
-      (query.sortOrder as 'asc' | 'desc') || 'desc',
+      query.sortBy || "createdAt",
+      (query.sortOrder as "asc" | "desc") || "desc",
     );
 
-    return buildPaginatedResponse(data.map(toProductResponse), total, { page, limit, skip });
+    return buildPaginatedResponse(data.map(toProductResponse), total, {
+      page,
+      limit,
+      skip,
+    });
   }
 
   async findOne(id: string): Promise<ProductResponse> {
     const product = await this.productRepository.findById(id);
-    if (!product) throw new NotFoundError('Product');
+    if (!product) throw new NotFoundError("Product");
     await this.productRepository.incrementViews(id);
     return toProductResponse(product);
   }
 
   async findBySlug(slug: string): Promise<ProductResponse> {
     const product = await this.productRepository.findBySlug(slug);
-    if (!product) throw new NotFoundError('Product');
+    if (!product) throw new NotFoundError("Product");
     await this.productRepository.incrementViews(String(product._id));
     return toProductResponse(product);
   }
 
   async update(id: string, dto: UpdateProductDto): Promise<ProductResponse> {
     const existing = await this.productRepository.findById(id);
-    if (!existing) throw new NotFoundError('Product');
+    if (!existing) throw new NotFoundError("Product");
 
     const updateData: Record<string, unknown> = {};
 
@@ -161,14 +184,17 @@ export class ProductService {
       updateData.slug = dto.slug;
     }
     if (dto.price !== undefined) updateData.price = dto.price;
-    if (dto.discountPercent !== undefined) updateData.discountPercent = dto.discountPercent;
+    if (dto.discountPercent !== undefined)
+      updateData.discountPercent = dto.discountPercent;
     if (dto.category) updateData.category = dto.category;
     if (dto.images) {
       updateData.images = dto.images;
       // Delete images that were removed
       const oldImages = existing.images || [];
       const newImages = dto.images;
-      const removedImages = oldImages.filter((img: string) => !newImages.includes(img));
+      const removedImages = oldImages.filter(
+        (img: string) => !newImages.includes(img),
+      );
       deleteFiles(removedImages);
     }
     if (dto.stock !== undefined) updateData.stock = dto.stock;
@@ -179,12 +205,14 @@ export class ProductService {
     const fieldsToTranslate: Record<string, string> = {};
     if (dto.name) fieldsToTranslate.name = dto.name;
     if (dto.description) fieldsToTranslate.description = dto.description;
-    if (dto.shortDescription) fieldsToTranslate.shortDescription = dto.shortDescription;
+    if (dto.shortDescription)
+      fieldsToTranslate.shortDescription = dto.shortDescription;
     if (dto.tags) fieldsToTranslate.tags = dto.tags;
 
     if (Object.keys(fieldsToTranslate).length > 0) {
       const translations = await geminiService.translate(fieldsToTranslate, {
-        context: 'filter-system factory product for industrial/household filters',
+        context:
+          "filter-system factory product for industrial/household filters",
       });
       Object.assign(updateData, translations);
     }
@@ -195,7 +223,7 @@ export class ProductService {
         dto.specifications.map(async (spec) => {
           const specTranslation = await geminiService.translate(
             { key: spec.key, value: spec.value },
-            { context: 'product technical specification for filters' },
+            { context: "product technical specification for filters" },
           );
           return { key: specTranslation.key, value: specTranslation.value };
         }),
@@ -204,13 +232,13 @@ export class ProductService {
     }
 
     const updated = await this.productRepository.update(id, updateData as any);
-    if (!updated) throw new NotFoundError('Product');
+    if (!updated) throw new NotFoundError("Product");
     return toProductResponse(updated);
   }
 
   async remove(id: string): Promise<void> {
     const product = await this.productRepository.findById(id);
-    if (!product) throw new NotFoundError('Product');
+    if (!product) throw new NotFoundError("Product");
     // Clean up uploaded images
     deleteFiles(product.images || []);
     await this.productRepository.delete(id);

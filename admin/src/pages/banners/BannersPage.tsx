@@ -80,7 +80,7 @@ export default function BannersPage() {
       resetForm();
     } catch (err: unknown) {
       const apiErr = err as { data?: { message?: string } };
-      setErrors({ title: apiErr.data?.message || 'Failed to save' });
+      setErrors({ title: apiErr.data?.message || t('common.failedToSave') });
     }
   };
 

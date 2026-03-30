@@ -80,9 +80,7 @@ export function Navbar({ locale, dict }: NavbarProps) {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-xl shadow-sm border-b border-slate-100"
-            : "bg-white/0"
+          scrolled ? "bg-white/50 backdrop-blur-xl" : "bg-white/0"
         }`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -103,25 +101,25 @@ export function Navbar({ locale, dict }: NavbarProps) {
 
               {/* Desktop Nav */}
               <nav className="hidden lg:flex items-center gap-1 bg-slate-100/80 rounded-full px-1.5 py-1">
-              {navLinks.map((link) => {
-                const isActive =
-                  pathname === link.href ||
-                  (link.href !== `/${locale}` &&
-                    pathname.startsWith(link.href));
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                      isActive
-                        ? "bg-white text-slate-900 shadow-sm"
-                        : "text-slate-500 hover:text-slate-900"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
+                {navLinks.map((link) => {
+                  const isActive =
+                    pathname === link.href ||
+                    (link.href !== `/${locale}` &&
+                      pathname.startsWith(link.href));
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`relative px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                        isActive
+                          ? "bg-white text-slate-900 shadow-sm"
+                          : "text-slate-500 hover:text-slate-900"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
 

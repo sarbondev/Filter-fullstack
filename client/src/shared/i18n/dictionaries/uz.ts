@@ -16,6 +16,17 @@ const uz: Dictionary = {
     description: "Sanoat va maishiy filtrlash yechimlari. Yuqori aniqlik bilan ishlab chiqarilgan suv, havo va moy filtrlari.",
     shopNow: 'Xarid qilish',
     viewCatalog: "Katalogni ko'rish",
+    stats: {
+      products: 'Mahsulotlar',
+      customers: 'Mijozlar',
+      satisfaction: 'Mamnunlik',
+    },
+    waterFilters: 'Suv filtrlari',
+    waterFiltersCount: '200+ model',
+    airFilters: 'Havo filtrlari',
+    airFiltersCount: '150+ model',
+    efficiency: 'Samaradorlik',
+    customersOverlay: '50 000+ mijozlar',
   },
   products: {
     title: 'Bizning mahsulotlar',
@@ -38,6 +49,7 @@ const uz: Dictionary = {
     priceHighLow: "Narx: kamayish bo'yicha",
     showMore: "Ko'proq ko'rsatish",
     description: 'Tavsif',
+    featuredBadge: 'Tavsiya etilgan',
   },
   categories: {
     title: 'Kategoriyalar',
@@ -73,6 +85,7 @@ const uz: Dictionary = {
     address: "Toshkent, O'zbekiston",
     phone: '+998 71 123 45 67',
     email: 'info@filtersystem.uz',
+    newsletter: "Yangi mahsulotlar va aksiyalardan xabardor bo'ling.",
   },
   common: {
     loading: 'Yuklanmoqda...',
@@ -101,6 +114,9 @@ const uz: Dictionary = {
     hasAccount: 'Hisobingiz bormi?',
     logout: 'Chiqish',
     loginRequired: 'Davom etish uchun tizimga kiring',
+    passwordHint: 'Kamida 8 belgi, 1 katta harf, 1 raqam',
+    fieldRequired: 'talab qilinadi',
+    fieldIncomplete: "to'liq emas",
   },
   checkout: {
     title: 'Buyurtma rasmiylashtirish',
@@ -116,6 +132,8 @@ const uz: Dictionary = {
     card: 'Bank kartasi',
     bankTransfer: "Bank o'tkazmasi",
     placeOrder: 'Buyurtma berish',
+    fillRequired: "Iltimos, barcha maydonlarni to'ldiring",
+    orderFailed: 'Buyurtma berishda xatolik',
     orderSuccess: 'Buyurtma muvaffaqiyatli berildi!',
     orderSuccessDesc: "Buyurtmangiz qabul qilindi. Tez orada siz bilan bog'lanamiz.",
     backToHome: 'Bosh sahifaga',
@@ -127,6 +145,16 @@ const uz: Dictionary = {
     empty: "Maqolalar hali yo'q",
     backToBlog: 'Blogga qaytish',
     views: "ko'rishlar",
+  },
+  orders: {
+    statuses: {
+      PENDING: 'Kutilmoqda',
+      CONFIRMED: 'Tasdiqlangan',
+      PROCESSING: 'Jarayonda',
+      SHIPPED: 'Yuborilgan',
+      DELIVERED: 'Yetkazilgan',
+      CANCELLED: 'Bekor qilingan',
+    },
   },
   settings: {
     title: 'Sozlamalar',

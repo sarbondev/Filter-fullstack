@@ -16,6 +16,17 @@ const ru: Dictionary = {
     description: 'Промышленные и бытовые решения для фильтрации. Водяные, воздушные и масляные фильтры, изготовленные с высокой точностью.',
     shopNow: 'Купить сейчас',
     viewCatalog: 'Смотреть каталог',
+    stats: {
+      products: 'Товары',
+      customers: 'Клиенты',
+      satisfaction: 'Довольны',
+    },
+    waterFilters: 'Водяные фильтры',
+    waterFiltersCount: '200+ моделей',
+    airFilters: 'Воздушные фильтры',
+    airFiltersCount: '150+ моделей',
+    efficiency: 'Эффективность',
+    customersOverlay: '50 000+ клиентов',
   },
   products: {
     title: 'Наши товары',
@@ -38,6 +49,7 @@ const ru: Dictionary = {
     priceHighLow: 'Цена: по убыванию',
     showMore: 'Показать ещё',
     description: 'Описание',
+    featuredBadge: 'Рекомендуемый',
   },
   categories: {
     title: 'Категории',
@@ -73,6 +85,7 @@ const ru: Dictionary = {
     address: 'Ташкент, Узбекистан',
     phone: '+998 71 123 45 67',
     email: 'info@filtersystem.uz',
+    newsletter: 'Будьте в курсе наших новинок и акций.',
   },
   common: {
     loading: 'Загрузка...',
@@ -101,6 +114,9 @@ const ru: Dictionary = {
     hasAccount: 'Уже есть аккаунт?',
     logout: 'Выйти',
     loginRequired: 'Войдите для продолжения',
+    passwordHint: 'Мин. 8 символов, 1 заглавная, 1 цифра',
+    fieldRequired: 'обязательно',
+    fieldIncomplete: 'не заполнено полностью',
   },
   checkout: {
     title: 'Оформление заказа',
@@ -116,6 +132,8 @@ const ru: Dictionary = {
     card: 'Банковская карта',
     bankTransfer: 'Банковский перевод',
     placeOrder: 'Оформить заказ',
+    fillRequired: 'Пожалуйста, заполните все обязательные поля',
+    orderFailed: 'Не удалось оформить заказ',
     orderSuccess: 'Заказ успешно оформлен!',
     orderSuccessDesc: 'Ваш заказ принят. Мы свяжемся с вами в ближайшее время.',
     backToHome: 'На главную',
@@ -127,6 +145,16 @@ const ru: Dictionary = {
     empty: 'Статей пока нет',
     backToBlog: 'Вернуться к блогу',
     views: 'просмотров',
+  },
+  orders: {
+    statuses: {
+      PENDING: 'В ожидании',
+      CONFIRMED: 'Подтверждён',
+      PROCESSING: 'В обработке',
+      SHIPPED: 'Отправлен',
+      DELIVERED: 'Доставлен',
+      CANCELLED: 'Отменён',
+    },
   },
   settings: {
     title: 'Настройки',

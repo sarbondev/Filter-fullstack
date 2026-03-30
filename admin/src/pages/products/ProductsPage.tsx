@@ -163,7 +163,7 @@ export default function ProductsPage() {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <p className="text-xs text-slate-500">{t('products.nameEn')}</p>
-                <p className="font-medium">{viewProduct.name[locale]}</p>
+                <p className="font-medium">{viewProduct.name.en}</p>
               </div>
               <div>
                 <p className="text-xs text-slate-500">{t('products.nameRu')}</p>
@@ -177,7 +177,7 @@ export default function ProductsPage() {
             <div className="grid grid-cols-3 gap-4">
               <div>
                 <p className="text-xs text-slate-500">{t('products.descEn')}</p>
-                <p className="text-sm">{viewProduct.description[locale]}</p>
+                <p className="text-sm">{viewProduct.description.en}</p>
               </div>
               <div>
                 <p className="text-xs text-slate-500">{t('products.descRu')}</p>
@@ -189,9 +189,9 @@ export default function ProductsPage() {
               </div>
             </div>
             <div className="grid grid-cols-4 gap-4 text-sm">
-              <div><span className="text-slate-500">Price:</span> {formatPrice(viewProduct.price)} UZS</div>
-              <div><span className="text-slate-500">Stock:</span> {viewProduct.stock}</div>
-              <div><span className="text-slate-500">Views:</span> {viewProduct.views}</div>
+              <div><span className="text-slate-500">{t('products.priceLabel')}:</span> {formatPrice(viewProduct.price)} UZS</div>
+              <div><span className="text-slate-500">{t('products.stockLabel')}:</span> {viewProduct.stock}</div>
+              <div><span className="text-slate-500">{t('products.viewsLabel')}:</span> {viewProduct.views}</div>
               <div><span className="text-slate-500">SKU:</span> {viewProduct.sku}</div>
             </div>
             {viewProduct.specifications.length > 0 && (

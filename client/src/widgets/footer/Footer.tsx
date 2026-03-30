@@ -62,7 +62,7 @@ export function Footer({ locale, dict }: FooterProps) {
           {/* Newsletter */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-white">{dict.footer.followUs}</h3>
-            <p className="text-sm mb-4">Stay updated with our latest products and offers.</p>
+            <p className="text-sm mb-4">{dict.footer.newsletter}</p>
             <div className="flex gap-2">
               <input
                 type="email"

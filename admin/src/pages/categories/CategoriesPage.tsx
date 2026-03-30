@@ -84,7 +84,7 @@ export default function CategoriesPage() {
       resetForm();
     } catch (err: unknown) {
       const apiErr = err as { data?: { message?: string } };
-      setErrors({ name: apiErr.data?.message || 'Failed to save' });
+      setErrors({ name: apiErr.data?.message || t('common.failedToSave') });
     }
   };
 

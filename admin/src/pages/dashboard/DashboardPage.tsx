@@ -132,7 +132,7 @@ export default function DashboardPage() {
               key: 'status',
               header: t('common.status'),
               render: (o) => (
-                <Badge variant={orderStatusVariant[o.status] ?? 'default'}>{o.status}</Badge>
+                <Badge variant={orderStatusVariant[o.status] ?? 'default'}>{t(`orders.statuses.${o.status}`)}</Badge>
               ),
             },
             {

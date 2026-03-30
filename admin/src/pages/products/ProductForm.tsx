@@ -93,7 +93,7 @@ export default function ProductForm({ product, onSuccess }: Props) {
       onSuccess();
     } catch (err: unknown) {
       const apiErr = err as { data?: { message?: string } };
-      setErrors({ name: apiErr.data?.message || 'Failed to save product' });
+      setErrors({ name: apiErr.data?.message || t('common.failedToSave') });
     }
   };
 
