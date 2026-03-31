@@ -6,6 +6,7 @@ import { deleteFile } from '../upload/upload.service';
 import { geminiService } from '../../shared/services/gemini.service';
 import { PaginatedResponse } from '../../shared/types/common.types';
 import { buildPaginatedResponse } from '../../shared/utils/pagination';
+import { emitToAll } from '../../shared/services/socket.service';
 
 export class BlogService {
   constructor(private readonly blogRepository: BlogRepository) {}
@@ -64,7 +65,9 @@ export class BlogService {
       excerpt,
     } as any);
 
-    return toBlogResponse(blog);
+    const response = toBlogResponse(blog);
+    emitToAll('blog:created', response);
+    return response;
   }
 
   async findAll(page: number, limit: number, publishedOnly = false): Promise<PaginatedResponse<BlogResponse>> {
@@ -117,7 +120,9 @@ export class BlogService {
 
     const updated = await this.blogRepository.update(id, updateData as any);
     if (!updated) throw new NotFoundError('Blog');
-    return toBlogResponse(updated);
+    const response = toBlogResponse(updated);
+    emitToAll('blog:updated', response);
+    return response;
   }
 
   async remove(id: string): Promise<void> {
@@ -125,5 +130,6 @@ export class BlogService {
     if (!blog) throw new NotFoundError('Blog');
     if (blog.image) deleteFile(blog.image);
     await this.blogRepository.delete(id);
+    emitToAll('blog:deleted', { id });
   }
 }

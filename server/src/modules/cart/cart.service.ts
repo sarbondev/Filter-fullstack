@@ -3,6 +3,7 @@ import { CartResponse, toCartResponse } from './cart.entity';
 import { AddToCartDto, UpdateCartItemDto } from './cart.schema';
 import { NotFoundError, AppError } from '../../shared/middleware/error-handler.middleware';
 import { ProductRepository } from '../products/product.repository';
+import { emitToUser } from '../../shared/services/socket.service';
 
 export class CartService {
   constructor(
@@ -22,7 +23,9 @@ export class CartService {
     if (product.stock < dto.quantity) throw new AppError('Insufficient stock', 400);
 
     const cart = await this.cartRepository.addItem(userId, dto.product, dto.quantity);
-    return toCartResponse(cart);
+    const response = toCartResponse(cart);
+    emitToUser(userId, 'cart:updated', response);
+    return response;
   }
 
   async updateItem(userId: string, productId: string, dto: UpdateCartItemDto): Promise<CartResponse> {
@@ -34,16 +37,21 @@ export class CartService {
 
     const cart = await this.cartRepository.updateItemQuantity(userId, productId, dto.quantity);
     if (!cart) throw new NotFoundError('Cart');
-    return toCartResponse(cart);
+    const response = toCartResponse(cart);
+    emitToUser(userId, 'cart:updated', response);
+    return response;
   }
 
   async removeItem(userId: string, productId: string): Promise<CartResponse> {
     const cart = await this.cartRepository.removeItem(userId, productId);
     if (!cart) throw new NotFoundError('Cart');
-    return toCartResponse(cart);
+    const response = toCartResponse(cart);
+    emitToUser(userId, 'cart:updated', response);
+    return response;
   }
 
   async clear(userId: string): Promise<void> {
     await this.cartRepository.clear(userId);
+    emitToUser(userId, 'cart:cleared', {});
   }
 }

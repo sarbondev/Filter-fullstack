@@ -10,6 +10,7 @@ import { deleteFiles } from "../upload/upload.service";
 import { geminiService } from "../../shared/services/gemini.service";
 import { PaginatedResponse } from "../../shared/types/common.types";
 import { buildPaginatedResponse } from "../../shared/utils/pagination";
+import { emitToAll } from "../../shared/services/socket.service";
 
 export class ProductService {
   constructor(private readonly productRepository: ProductRepository) {}
@@ -94,7 +95,9 @@ export class ProductService {
       specifications: translatedSpecs,
     } as any);
 
-    return toProductResponse(product);
+    const response = toProductResponse(product);
+    emitToAll('product:created', response);
+    return response;
   }
 
   async findAll(
@@ -233,7 +236,9 @@ export class ProductService {
 
     const updated = await this.productRepository.update(id, updateData as any);
     if (!updated) throw new NotFoundError("Product");
-    return toProductResponse(updated);
+    const response = toProductResponse(updated);
+    emitToAll('product:updated', response);
+    return response;
   }
 
   async remove(id: string): Promise<void> {
@@ -242,5 +247,6 @@ export class ProductService {
     // Clean up uploaded images
     deleteFiles(product.images || []);
     await this.productRepository.delete(id);
+    emitToAll('product:deleted', { id });
   }
 }

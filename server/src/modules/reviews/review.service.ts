@@ -3,6 +3,7 @@ import { ReviewResponse, toReviewResponse } from './review.entity';
 import { CreateReviewDto } from './review.schema';
 import { NotFoundError, ConflictError } from '../../shared/middleware/error-handler.middleware';
 import { geminiService } from '../../shared/services/gemini.service';
+import { emitToStaff, emitToAll } from '../../shared/services/socket.service';
 
 export class ReviewService {
   constructor(private readonly reviewRepository: ReviewRepository) {}
@@ -24,7 +25,9 @@ export class ReviewService {
     });
 
     const populated = await this.reviewRepository.findById(String(review._id));
-    return toReviewResponse(populated!);
+    const response = toReviewResponse(populated!);
+    emitToStaff('review:new', response);
+    return response;
   }
 
   async findByProduct(productId: string): Promise<{ reviews: ReviewResponse[]; average: number; count: number }> {
@@ -52,12 +55,15 @@ export class ReviewService {
   async approve(id: string): Promise<ReviewResponse> {
     const review = await this.reviewRepository.approve(id);
     if (!review) throw new NotFoundError('Review');
-    return toReviewResponse(review);
+    const response = toReviewResponse(review);
+    emitToAll('review:approved', response);
+    return response;
   }
 
   async remove(id: string): Promise<void> {
     const review = await this.reviewRepository.findById(id);
     if (!review) throw new NotFoundError('Review');
     await this.reviewRepository.delete(id);
+    emitToAll('review:deleted', { id });
   }
 }

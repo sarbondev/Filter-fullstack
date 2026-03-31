@@ -4,6 +4,7 @@ import { CreateCategoryDto, UpdateCategoryDto } from './category.schema';
 import { NotFoundError, ConflictError } from '../../shared/middleware/error-handler.middleware';
 import { deleteFile } from '../upload/upload.service';
 import { geminiService } from '../../shared/services/gemini.service';
+import { emitToAll } from '../../shared/services/socket.service';
 
 export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
@@ -45,7 +46,9 @@ export class CategoryService {
       description,
     } as any);
 
-    return toCategoryResponse(category);
+    const response = toCategoryResponse(category);
+    emitToAll('category:created', response);
+    return response;
   }
 
   async findAll(activeOnly = false): Promise<CategoryResponse[]> {
@@ -114,7 +117,9 @@ export class CategoryService {
 
     const updated = await this.categoryRepository.update(id, updateData as any);
     if (!updated) throw new NotFoundError('Category');
-    return toCategoryResponse(updated);
+    const response = toCategoryResponse(updated);
+    emitToAll('category:updated', response);
+    return response;
   }
 
   async remove(id: string): Promise<void> {
@@ -126,5 +131,6 @@ export class CategoryService {
 
     if (category.image) deleteFile(category.image);
     await this.categoryRepository.delete(id);
+    emitToAll('category:deleted', { id });
   }
 }

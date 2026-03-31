@@ -1,9 +1,12 @@
+'use client';
+
 import { useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import type { Socket } from 'socket.io-client';
-import { useAppDispatch, useAppSelector } from './store';
-import { incrementNotifications } from '@/store/authSlice';
+import { useAppDispatch, useAppSelector } from './index';
 import { baseApi } from '@/store/api/baseApi';
+
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:4000';
 
 export function useSocket() {
   const token = useAppSelector((s) => s.auth.token);
@@ -13,30 +16,12 @@ export function useSocket() {
   useEffect(() => {
     if (!token) return;
 
-    const socket = io('/', { auth: { token } });
+    const socket = io(SOCKET_URL, { auth: { token } });
     socketRef.current = socket;
 
-    socket.on('connect', () => {
-      console.log('WebSocket connected');
-    });
-
-    // Order events
-    socket.on('order:new', () => {
-      dispatch(incrementNotifications());
-      dispatch(baseApi.util.invalidateTags(['Order', 'Dashboard']));
-    });
-
-    socket.on('order:statusUpdated', () => {
-      dispatch(baseApi.util.invalidateTags(['Order', 'Dashboard']));
-    });
-
-    socket.on('order:paymentUpdated', () => {
-      dispatch(baseApi.util.invalidateTags(['Order', 'Dashboard']));
-    });
-
-    // Product events
+    // Product events — refresh product listings in real time
     socket.on('product:created', () => {
-      dispatch(baseApi.util.invalidateTags(['Product', 'Dashboard']));
+      dispatch(baseApi.util.invalidateTags(['Product']));
     });
 
     socket.on('product:updated', () => {
@@ -44,12 +29,12 @@ export function useSocket() {
     });
 
     socket.on('product:deleted', () => {
-      dispatch(baseApi.util.invalidateTags(['Product', 'Dashboard']));
+      dispatch(baseApi.util.invalidateTags(['Product']));
     });
 
     // Category events
     socket.on('category:created', () => {
-      dispatch(baseApi.util.invalidateTags(['Category', 'Dashboard']));
+      dispatch(baseApi.util.invalidateTags(['Category']));
     });
 
     socket.on('category:updated', () => {
@@ -57,15 +42,28 @@ export function useSocket() {
     });
 
     socket.on('category:deleted', () => {
-      dispatch(baseApi.util.invalidateTags(['Category', 'Dashboard']));
+      dispatch(baseApi.util.invalidateTags(['Category']));
+    });
+
+    // Order events — user's own orders
+    socket.on('order:statusUpdated', () => {
+      dispatch(baseApi.util.invalidateTags(['Order']));
+    });
+
+    socket.on('order:paymentUpdated', () => {
+      dispatch(baseApi.util.invalidateTags(['Order']));
+    });
+
+    // Cart events — sync across tabs/devices
+    socket.on('cart:updated', () => {
+      dispatch(baseApi.util.invalidateTags(['Cart']));
+    });
+
+    socket.on('cart:cleared', () => {
+      dispatch(baseApi.util.invalidateTags(['Cart']));
     });
 
     // Review events
-    socket.on('review:new', () => {
-      dispatch(incrementNotifications());
-      dispatch(baseApi.util.invalidateTags(['Review']));
-    });
-
     socket.on('review:approved', () => {
       dispatch(baseApi.util.invalidateTags(['Review']));
     });
@@ -85,19 +83,6 @@ export function useSocket() {
 
     socket.on('banner:deleted', () => {
       dispatch(baseApi.util.invalidateTags(['Banner']));
-    });
-
-    // User events
-    socket.on('user:created', () => {
-      dispatch(baseApi.util.invalidateTags(['User', 'Dashboard']));
-    });
-
-    socket.on('user:updated', () => {
-      dispatch(baseApi.util.invalidateTags(['User']));
-    });
-
-    socket.on('user:deleted', () => {
-      dispatch(baseApi.util.invalidateTags(['User', 'Dashboard']));
     });
 
     // Blog events

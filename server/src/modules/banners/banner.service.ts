@@ -4,6 +4,7 @@ import { CreateBannerDto, UpdateBannerDto } from './banner.schema';
 import { NotFoundError } from '../../shared/middleware/error-handler.middleware';
 import { deleteFile } from '../upload/upload.service';
 import { geminiService } from '../../shared/services/gemini.service';
+import { emitToAll } from '../../shared/services/socket.service';
 
 export class BannerService {
   constructor(private readonly bannerRepository: BannerRepository) {}
@@ -25,7 +26,9 @@ export class BannerService {
       endDate: dto.endDate ? new Date(dto.endDate) : undefined,
     } as any);
 
-    return toBannerResponse(banner);
+    const response = toBannerResponse(banner);
+    emitToAll('banner:created', response);
+    return response;
   }
 
   async findActive(): Promise<BannerResponse[]> {
@@ -75,7 +78,9 @@ export class BannerService {
 
     const updated = await this.bannerRepository.update(id, updateData as any);
     if (!updated) throw new NotFoundError('Banner');
-    return toBannerResponse(updated);
+    const response = toBannerResponse(updated);
+    emitToAll('banner:updated', response);
+    return response;
   }
 
   async remove(id: string): Promise<void> {
@@ -83,5 +88,6 @@ export class BannerService {
     if (!banner) throw new NotFoundError('Banner');
     if (banner.image) deleteFile(banner.image);
     await this.bannerRepository.delete(id);
+    emitToAll('banner:deleted', { id });
   }
 }
