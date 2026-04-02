@@ -74,6 +74,8 @@ const uz = {
     blogs: 'Blog',
     adminPanel: 'Admin panel',
     filterSystem: 'Filtr tizimi',
+    partners: 'Hamkorlar',
+    industries: 'Sohalar',
     settings: 'Sozlamalar',
   },
   dashboard: {
@@ -117,9 +119,11 @@ const uz = {
     nameEn: 'Nomi (EN)',
     nameRu: 'Nomi (RU)',
     nameUz: 'Nomi (UZ)',
+    nameKz: 'Nomi (KZ)',
     descEn: 'Tavsif (EN)',
     descRu: 'Tavsif (RU)',
     descUz: 'Tavsif (UZ)',
+    descKz: 'Tavsif (KZ)',
   },
   categories: {
     title: 'Kategoriyalar',

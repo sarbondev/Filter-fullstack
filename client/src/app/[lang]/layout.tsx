@@ -6,6 +6,7 @@ import StoreProvider from '@/providers/StoreProvider';
 import { Navbar } from '@/widgets/navbar/Navbar';
 import { Footer } from '@/widgets/footer/Footer';
 import { ToastContainer } from '@/features/toast/Toast';
+import { ProgressBar } from '@/features/progress-bar/ProgressBar';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -13,6 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     en: 'FilterSystem - Premium Filter Solutions',
     ru: 'FilterSystem - Премиальные системы фильтрации',
     uz: 'FilterSystem - Premium filtr tizimlari',
+    kz: 'FilterSystem - Премиум сүзгі жүйелері',
   };
   return {
     title: { default: titles[lang] || titles.ru, template: '%s | FilterSystem' },
@@ -21,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 }
 
 export async function generateStaticParams() {
-  return [{ lang: 'en' }, { lang: 'ru' }, { lang: 'uz' }];
+  return [{ lang: 'en' }, { lang: 'ru' }, { lang: 'uz' }, { lang: 'kz' }];
 }
 
 export default async function LangLayout({
@@ -42,6 +44,7 @@ export default async function LangLayout({
     <html lang={locale}>
       <body className="antialiased">
         <StoreProvider>
+          <ProgressBar />
           <Navbar locale={locale} dict={dict} />
           <main className="min-h-screen pt-16 lg:pt-[72px]">
             {children}

@@ -29,7 +29,7 @@ export type TranslatedOutput<T extends TranslatableInput> = {
 };
 
 export interface TranslateOptions {
-  sourceLanguage?: "uz" | "ru" | "en";
+  sourceLanguage?: "uz" | "ru" | "en" | "kz";
   context?: string;
 }
 
@@ -104,17 +104,18 @@ export class GeminiService {
     const fieldsJson = JSON.stringify(fields, null, 2);
 
     const expectedStructure = Object.keys(fields).reduce(
-      (acc, key) => ({ ...acc, [key]: { uz: "...", ru: "...", en: "..." } }),
+      (acc, key) => ({ ...acc, [key]: { uz: "...", ru: "...", en: "...", kz: "..." } }),
       {} as Record<string, unknown>,
     );
 
     const prompt = `You are a professional multilingual translator and editor for a filter-system factory e-commerce platform.
 Context: ${context}
 
-Your task: Auto-detect the input language, FIX any spelling/grammar mistakes in the original text, then provide corrected and properly translated versions in all three languages:
+Your task: Auto-detect the input language, FIX any spelling/grammar mistakes in the original text, then provide corrected and properly translated versions in all four languages:
 - Uzbek (uz) — MUST use Latin script, never Cyrillic
 - Russian (ru) — use Cyrillic script
 - English (en)
+- Kazakh (kz) — use Cyrillic script
 
 Input fields:
 ${fieldsJson}
@@ -148,7 +149,7 @@ ${JSON.stringify(expectedStructure, null, 2)}`;
       );
       return Object.entries(fields).reduce((acc, [key, value]) => {
         const raw = Array.isArray(value) ? value.join(", ") : value;
-        return { ...acc, [key]: { uz: raw, ru: raw, en: raw } };
+        return { ...acc, [key]: { uz: raw, ru: raw, en: raw, kz: raw } };
       }, {} as TranslatedOutput<T>);
     }
   }
@@ -179,18 +180,19 @@ Given this category name (auto-detect language, fix any spelling/grammar):
 "${name}"
 
 Tasks:
-1. Fix and correct the name, then translate it into all 3 languages
-2. Generate a short professional 1-2 sentence description for this category, in all 3 languages
+1. Fix and correct the name, then translate it into all 4 languages
+2. Generate a short professional 1-2 sentence description for this category, in all 4 languages
 
 Languages:
 - Uzbek (uz) — Latin script only
 - Russian (ru) — Cyrillic script
 - English (en)
+- Kazakh (kz) — Cyrillic script
 
 Respond ONLY with valid JSON:
 {
-  "name": { "uz": "...", "ru": "...", "en": "..." },
-  "description": { "uz": "...", "ru": "...", "en": "..." }
+  "name": { "uz": "...", "ru": "...", "en": "...", "kz": "..." },
+  "description": { "uz": "...", "ru": "...", "en": "...", "kz": "..." }
 }`;
 
     try {
@@ -203,8 +205,8 @@ Respond ONLY with valid JSON:
       const errMsg = error instanceof Error ? error.message : String(error);
       logger.error({ error: errMsg, name, context }, "Gemini category translation failed — using fallback");
       return {
-        name: { uz: name, ru: name, en: name },
-        description: { uz: name, ru: name, en: name },
+        name: { uz: name, ru: name, en: name, kz: name },
+        description: { uz: name, ru: name, en: name, kz: name },
       };
     }
   }
@@ -217,7 +219,7 @@ export const geminiService = new GeminiService();
 export type ProductTranslationInput = {
   name: string;
   description: string;
-  sourceLanguage?: "uz" | "ru" | "en";
+  sourceLanguage?: "uz" | "ru" | "en" | "kz";
 };
 /** @deprecated */
 export type ProductTranslations = {

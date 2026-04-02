@@ -2,9 +2,10 @@ export interface TranslatedField {
   uz: string;
   ru: string;
   en: string;
+  kz: string;
 }
 
-export type Locale = 'uz' | 'ru' | 'en';
+export type Locale = 'uz' | 'ru' | 'en' | 'kz';
 
 export interface PaginationMeta {
   total: number;
@@ -92,10 +93,7 @@ export interface Review {
 
 export interface Banner {
   id: string;
-  title: TranslatedField;
-  subtitle: TranslatedField;
   image: string;
-  link?: string;
   isActive: boolean;
   sortOrder: number;
   createdAt: string;

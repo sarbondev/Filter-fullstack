@@ -23,6 +23,12 @@ const badges = {
     { icon: RotateCcw, title: '30 kunlik qaytarish', desc: 'Oson va qulay qaytarish' },
     { icon: Headphones, title: "24/7 qo'llab-quvvatlash", desc: 'Mutaxassis texnik yordam' },
   ],
+  kz: [
+    { icon: Shield, title: 'Сапа кепілдігі', desc: 'ISO 9001 сертификатталған өндіріс' },
+    { icon: Truck, title: 'Жылдам жеткізу', desc: 'Өзбекстан бойынша тегін жеткізу' },
+    { icon: RotateCcw, title: '30 күндік қайтару', desc: 'Оңай және ыңғайлы қайтару' },
+    { icon: Headphones, title: '24/7 қолдау', desc: 'Маман техникалық көмек' },
+  ],
 };
 
 export function TrustBadges({ locale }: { locale: Locale }) {

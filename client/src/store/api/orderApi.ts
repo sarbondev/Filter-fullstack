@@ -1,7 +1,7 @@
 import { baseApi } from './baseApi';
 
 interface OrderProduct {
-  name?: { uz: string; ru: string; en: string };
+  name?: { uz: string; ru: string; en: string; kz: string };
   slug?: string;
   images?: string[];
   price?: number;

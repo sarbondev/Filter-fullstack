@@ -8,6 +8,8 @@ import {
   Star,
   Image,
   FileText,
+  Handshake,
+  Factory,
   Filter,
   Settings,
 } from "lucide-react";
@@ -24,6 +26,8 @@ const navigation = [
   { key: "reviews", href: "/reviews", icon: Star },
   { key: "banners", href: "/banners", icon: Image },
   { key: "blogs", href: "/blogs", icon: FileText },
+  { key: "partners", href: "/partners", icon: Handshake },
+  { key: "industries", href: "/industries", icon: Factory },
   { key: "settings", href: "/settings", icon: Settings },
 ];
 

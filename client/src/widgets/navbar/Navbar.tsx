@@ -39,6 +39,10 @@ export function Navbar({ locale, dict }: NavbarProps) {
   const auth = useAppSelector((s) => s.auth);
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
 
+  // Is this the homepage? (transparent navbar at top)
+  const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
+  const transparent = isHome && !scrolled;
+
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handler, { passive: true });
@@ -74,27 +78,45 @@ export function Navbar({ locale, dict }: NavbarProps) {
     setUserMenuOpen(false);
   };
 
+  /* ── Style helpers based on transparent state ── */
+  const headerBg = transparent
+    ? "bg-transparent"
+    : "bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm shadow-slate-200/20";
+
+  const logoText = transparent ? "text-white" : "text-slate-900";
+  const linkBase = transparent
+    ? "text-white/70 hover:text-white hover:bg-white/10"
+    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50";
+  const linkActive = transparent
+    ? "text-white bg-white/15"
+    : "text-primary bg-primary/[0.06]";
+  const iconBtn = transparent
+    ? "text-white/70 hover:text-white hover:bg-white/10"
+    : "text-slate-500 hover:text-slate-700 hover:bg-slate-50";
+  const authBtn = transparent
+    ? "bg-white/10 border-white/20 text-white hover:bg-white/20"
+    : "bg-slate-50 border-slate-200/60 text-slate-700 hover:bg-slate-100";
+  const userBtnBg = transparent
+    ? "bg-white/10 border-white/20 text-white hover:bg-white/20"
+    : "bg-slate-50 border-slate-200/60 text-slate-700 hover:bg-slate-100";
+  const badgeRing = transparent ? "ring-transparent" : "ring-white";
+
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-          scrolled
-            ? "bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm shadow-slate-200/20"
-            : "bg-white/0"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerBg}`}
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between lg:h-[72px]">
             {/* Logo + Nav */}
             <div className="flex items-center gap-8">
-              <Link
-                href={`/${locale}`}
-                className="flex items-center gap-2.5"
-              >
+              <Link href={`/${locale}`} className="flex items-center gap-2.5">
                 <div className="rounded-lg bg-primary p-2">
                   <Filter className="h-4.5 w-4.5 text-white" />
                 </div>
-                <span className="text-lg font-bold text-slate-900 tracking-tight">
+                <span
+                  className={`text-lg font-bold tracking-tight transition-colors duration-300 ${logoText}`}
+                >
                   Filter<span className="text-primary">System</span>
                 </span>
               </Link>
@@ -110,10 +132,8 @@ export function Navbar({ locale, dict }: NavbarProps) {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`px-3.5 py-2 text-sm font-medium rounded-lg transition-colors duration-150 ${
-                        isActive
-                          ? "text-primary bg-primary/[0.06]"
-                          : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                      className={`px-3.5 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                        isActive ? linkActive : linkBase
                       }`}
                     >
                       {link.label}
@@ -125,14 +145,17 @@ export function Navbar({ locale, dict }: NavbarProps) {
 
             {/* Right Actions */}
             <div className="flex items-center gap-1">
-              <LanguageSwitcher currentLang={locale} />
+              <LanguageSwitcher
+                currentLang={locale}
+                transparent={transparent}
+              />
 
               {/* User / Auth */}
               {auth.user ? (
                 <div ref={userMenuRef} className="relative">
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
-                    className="hidden sm:flex items-center gap-2 rounded-lg bg-slate-50 border border-slate-200/60 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                    className={`hidden sm:flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200 ${userBtnBg}`}
                   >
                     <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-[11px] font-bold text-white">
                       {auth.user.name.charAt(0).toUpperCase()}
@@ -140,7 +163,7 @@ export function Navbar({ locale, dict }: NavbarProps) {
                     <span className="max-w-[80px] truncate text-[13px]">
                       {auth.user.name}
                     </span>
-                    <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                    <ChevronDown className="h-3.5 w-3.5 opacity-50" />
                   </button>
 
                   <AnimatePresence>
@@ -192,9 +215,11 @@ export function Navbar({ locale, dict }: NavbarProps) {
               ) : (
                 <Link
                   href={`/${locale}/auth`}
-                  className="hidden sm:flex items-center gap-2 rounded-lg bg-slate-50 border border-slate-200/60 px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors"
+                  className={`hidden sm:flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200 ${authBtn}`}
                 >
-                  <User className="h-4 w-4 text-slate-400" />
+                  <User
+                    className={`h-4 w-4 ${transparent ? "text-white/60" : "text-slate-400"}`}
+                  />
                   {dict.auth.login}
                 </Link>
               )}
@@ -202,11 +227,13 @@ export function Navbar({ locale, dict }: NavbarProps) {
               {/* Wishlist */}
               <Link
                 href={`/${locale}/wishlist`}
-                className="relative flex items-center justify-center rounded-lg p-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+                className={`relative flex items-center justify-center rounded-lg p-2.5 transition-colors duration-200 ${iconBtn}`}
               >
                 <Bookmark className="h-5 w-5" />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+                  <span
+                    className={`absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ${badgeRing}`}
+                  >
                     {wishlistCount > 9 ? "9+" : wishlistCount}
                   </span>
                 )}
@@ -215,11 +242,13 @@ export function Navbar({ locale, dict }: NavbarProps) {
               {/* Cart */}
               <Link
                 href={`/${locale}/cart`}
-                className="relative flex items-center justify-center rounded-lg p-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+                className={`relative flex items-center justify-center rounded-lg p-2.5 transition-colors duration-200 ${iconBtn}`}
               >
                 <ShoppingCart className="h-5 w-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ring-white">
+                  <span
+                    className={`absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white ring-2 ${badgeRing}`}
+                  >
                     {cartCount > 9 ? "9+" : cartCount}
                   </span>
                 )}
@@ -227,7 +256,7 @@ export function Navbar({ locale, dict }: NavbarProps) {
 
               {/* Mobile Menu Toggle */}
               <button
-                className="lg:hidden rounded-lg p-2.5 text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+                className={`lg:hidden rounded-lg p-2.5 transition-colors duration-200 ${iconBtn}`}
                 onClick={() => setMobileOpen(!mobileOpen)}
               >
                 {mobileOpen ? (
@@ -255,7 +284,8 @@ export function Navbar({ locale, dict }: NavbarProps) {
               {navLinks.map((link) => {
                 const isActive =
                   pathname === link.href ||
-                  (link.href !== `/${locale}` && pathname.startsWith(link.href));
+                  (link.href !== `/${locale}` &&
+                    pathname.startsWith(link.href));
                 return (
                   <Link
                     key={link.href}

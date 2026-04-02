@@ -32,6 +32,15 @@ const content = {
       { name: 'Marina Petrova', role: 'Restoran tarmog\'i egasi', rating: 5, text: "Toza suv restoranlarimiz uchun zarur. FilterSystem barqaror sifat va tezkor xizmat ko'rsatadi." },
     ],
   },
+  kz: {
+    title: 'Клиенттеріміз не дейді',
+    testimonials: [
+      { name: 'Ақмал Кәрімов', role: 'Зауыт директоры, Ташкент', rating: 5, text: 'FilterSystem су тазалау желімізді өзгертті. Өнеркәсіптік сүзгілердің сапасы мен сенімділігі теңдесі жоқ. Тиімділік 40%-ға артты.' },
+      { name: 'Ділноза Рашидова', role: 'Қонақүй менеджері, Самарқанд', rating: 5, text: 'Қонақүй бойынша су сүзгілеу жүйесін орнаттық. Қонақтар бірден жақсаруды байқады. Тамаша сатудан кейінгі қолдау.' },
+      { name: 'Бобұр Әлиев', role: 'Ауыл шаруашылығы инженері', rating: 5, text: 'Олардың суару сүзгі жүйелері 3 жылдан бері мінсіз жұмыс істеуде. Құрастыру сапасы ерекше.' },
+      { name: 'Марина Петрова', role: 'Мейрамхана желісінің иесі', rating: 5, text: 'Таза су мейрамханаларымыз үшін маңызды. FilterSystem тұрақты сапа мен жылдам қызмет көрсетеді.' },
+    ],
+  },
 };
 
 export function Testimonials({ locale }: { locale: Locale }) {

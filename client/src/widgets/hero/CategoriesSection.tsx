@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FolderTree } from 'lucide-react';
+import { ArrowRight, FolderTree } from 'lucide-react';
 import type { Locale } from '@/shared/types';
 import type { Dictionary } from '@/shared/i18n/dictionaries/en';
 import { useGetCategoriesQuery } from '@/store/api/categoryApi';
@@ -19,62 +19,84 @@ export function CategoriesSection({ locale, dict }: Props) {
   const { data: categories, isLoading } = useGetCategoriesQuery();
 
   return (
-    <section className="py-20 bg-slate-50/70">
+    <section className="py-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          className="flex items-end justify-between mb-10"
         >
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            {dict.categories.exploreCategories}
-          </h2>
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              {dict.categories.exploreCategories}
+            </h2>
+            <p className="mt-2 text-sm text-slate-500">{dict.categories.title}</p>
+          </div>
+          <Link
+            href={`/${locale}/categories`}
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          >
+            {dict.categories.viewAll}
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {isLoading
-            ? Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-48 rounded-xl" />
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton key={i} className="h-52 rounded-2xl" />
               ))
-            : categories?.slice(0, 10).map((cat, i) => (
+            : categories?.slice(0, 8).map((cat, i) => (
                 <motion.div
                   key={cat.id}
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.03 }}
+                  transition={{ delay: i * 0.04 }}
                 >
                   <Link
                     href={`/${locale}/categories/${cat.slug}`}
-                    className="group relative block overflow-hidden rounded-xl bg-white border border-slate-200/80 transition-all duration-200 hover:shadow-md hover:shadow-slate-200/40 hover:border-slate-300 h-48"
+                    className="group relative block overflow-hidden rounded-2xl h-52 bg-slate-100"
                   >
-                    <div className="relative z-10 p-4">
-                      <h3 className="text-sm font-semibold text-slate-900 leading-snug line-clamp-2 max-w-[70%] group-hover:text-primary transition-colors">
-                        {t(cat.name, locale)}
-                      </h3>
-                    </div>
-
-                    <div className="absolute bottom-0 right-0 w-28 h-28">
-                      <div className="absolute inset-0 rounded-full bg-slate-100/80 scale-110 translate-x-4 translate-y-4" />
-                      {cat.image ? (
+                    {cat.image ? (
+                      <>
                         <Image
                           src={getImageUrl(cat.image)}
                           alt={t(cat.name, locale)}
                           fill
-                          className="object-contain p-2 drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-                          sizes="112px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                         />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <FolderTree className="h-10 w-10 text-slate-200" />
-                        </div>
-                      )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent transition-opacity duration-300 group-hover:from-black/80" />
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
+                        <FolderTree className="h-12 w-12 text-slate-300" />
+                      </div>
+                    )}
+
+                    <div className="absolute inset-0 flex flex-col justify-end p-4 sm:p-5">
+                      <h3 className="text-sm sm:text-base font-bold text-white leading-snug line-clamp-2 drop-shadow-lg">
+                        {t(cat.name, locale)}
+                      </h3>
+                      <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-medium text-white/70 group-hover:text-white transition-colors">
+                        {dict.categories.viewAll}
+                        <ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5" />
+                      </span>
                     </div>
                   </Link>
                 </motion.div>
               ))}
         </div>
+
+        <Link
+          href={`/${locale}/categories`}
+          className="mt-8 sm:hidden flex items-center justify-center gap-1.5 text-sm font-semibold text-primary"
+        >
+          {dict.categories.viewAll}
+          <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     </section>
   );

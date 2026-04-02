@@ -27,7 +27,17 @@ export function BlogDetailClient({ locale, dict, slug }: Props) {
     );
   }
 
-  if (!blog) return null;
+  if (!blog) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20 text-center">
+        <p className="text-lg text-slate-400">{dict.blog.empty}</p>
+        <Link href={`/${locale}/blog`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
+          <ArrowLeft className="h-4 w-4" />
+          {dict.blog.backToBlog}
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8">

@@ -6,6 +6,7 @@ import { FeaturedProducts } from '@/widgets/product-grid/FeaturedProducts';
 import { WhyUs } from '@/widgets/hero/WhyUs';
 import { CategoriesSection } from '@/widgets/hero/CategoriesSection';
 import { Testimonials } from '@/widgets/hero/Testimonials';
+import { IndustriesSection } from '@/widgets/hero/IndustriesSection';
 import { BrandsSection } from '@/widgets/hero/BrandsSection';
 import { CTASection } from '@/widgets/hero/CTASection';
 
@@ -15,15 +16,16 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const dict = await getDictionary(locale);
 
   return (
-    <>
+    <div className="-mt-16 lg:-mt-[72px]">
       <Hero locale={locale} dict={dict} />
       <TrustBadges locale={locale} />
       <FeaturedProducts locale={locale} dict={dict} />
       <WhyUs locale={locale} />
       <CategoriesSection locale={locale} dict={dict} />
       <Testimonials locale={locale} />
+      <IndustriesSection locale={locale} />
       <BrandsSection locale={locale} />
       <CTASection locale={locale} />
-    </>
+    </div>
   );
 }

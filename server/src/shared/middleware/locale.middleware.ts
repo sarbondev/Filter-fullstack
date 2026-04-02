@@ -9,7 +9,7 @@ declare global {
   }
 }
 
-const SUPPORTED_LOCALES: Locale[] = ['uz', 'ru', 'en'];
+const SUPPORTED_LOCALES: Locale[] = ['uz', 'ru', 'en', 'kz'];
 const DEFAULT_LOCALE: Locale = 'en';
 
 function parseLocale(value: string | undefined): Locale {

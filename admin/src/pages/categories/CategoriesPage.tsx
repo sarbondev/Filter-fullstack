@@ -110,7 +110,7 @@ export default function CategoriesPage() {
               render: (c) => (
                 <div>
                   <p className="font-medium text-slate-900">{tf(c.name, locale)}</p>
-                  <p className="text-xs text-slate-500">{c.name.uz} / {c.name.ru}</p>
+                  <p className="text-xs text-slate-500">{c.name.uz} / {c.name.ru} / {c.name.kz}</p>
                 </div>
               ),
             },

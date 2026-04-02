@@ -25,8 +25,8 @@ function deepLocalize<T>(data: T, locale: Locale): T {
   if (typeof data === 'object') {
     const obj = data as Record<string, unknown>;
     // Check if it's a TranslatedField
-    if ('uz' in obj && 'ru' in obj && 'en' in obj && Object.keys(obj).length === 3 &&
-        typeof obj.uz === 'string' && typeof obj.ru === 'string' && typeof obj.en === 'string') {
+    if ('uz' in obj && 'ru' in obj && 'en' in obj && 'kz' in obj && Object.keys(obj).length === 4 &&
+        typeof obj.uz === 'string' && typeof obj.ru === 'string' && typeof obj.en === 'string' && typeof obj.kz === 'string') {
       return (obj[locale] || obj.en) as T;
     }
     // Recurse into object

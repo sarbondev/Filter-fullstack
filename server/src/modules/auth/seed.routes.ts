@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { UserModel } from "../users/user.schema";
 import { CategoryModel } from "../categories/category.schema";
 import { ProductModel } from "../products/product.schema";
-import { BannerModel } from "../banners/banner.schema";
 import { geminiService } from "../../shared/services/gemini.service";
 import { logger } from "../../shared/utils/logger";
 
@@ -143,27 +142,7 @@ router.post("/retranslate", async (_req: Request, res: Response) => {
     }
   }
 
-  // Re-translate banners
-  const banners = await BannerModel.find();
-  for (const banner of banners) {
-    try {
-      const titleSource = banner.title.en || banner.title.uz || banner.title.ru;
-      const subSource = banner.subtitle.en || banner.subtitle.uz || banner.subtitle.ru;
-      if (!titleSource) continue;
-
-      const translations = await geminiService.translate(
-        { title: titleSource, subtitle: subSource },
-        { context: "promotional banner for filter-system factory" },
-      );
-      banner.title = translations.title as any;
-      banner.subtitle = translations.subtitle as any;
-      await banner.save();
-      count++;
-      logger.info({ id: banner._id }, "Re-translated banner");
-    } catch (err) {
-      logger.error({ id: banner._id, err }, "Failed to re-translate banner");
-    }
-  }
+  // Banners are image-only now, no translation needed
 
   res.json({ success: true, message: `Re-translated ${count} items` });
   } catch (error) {

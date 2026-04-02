@@ -2,6 +2,7 @@ export interface TranslatedField {
   uz: string;
   ru: string;
   en: string;
+  kz: string;
 }
 
 export interface PaginationMeta {
@@ -169,26 +170,16 @@ export interface Review {
 // Banner
 export interface Banner {
   id: string;
-  title: TranslatedField;
-  subtitle: TranslatedField;
   image: string;
-  link?: string;
   isActive: boolean;
   sortOrder: number;
-  startDate?: string;
-  endDate?: string;
   createdAt: string;
 }
 
 export interface CreateBannerRequest {
-  title: string;
-  subtitle: string;
   image: string;
-  link?: string;
   isActive?: boolean;
   sortOrder?: number;
-  startDate?: string;
-  endDate?: string;
 }
 
 // User (admin)
@@ -225,6 +216,38 @@ export interface CreateBlogRequest {
   content: string;
   image?: string;
   isPublished?: boolean;
+}
+
+// Partner
+export interface Partner {
+  id: string;
+  image: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export interface CreatePartnerRequest {
+  image: string;
+  isActive?: boolean;
+  sortOrder?: number;
+}
+
+// Industry
+export interface Industry {
+  id: string;
+  name: TranslatedField;
+  image: string;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export interface CreateIndustryRequest {
+  name: string;
+  image: string;
+  isActive?: boolean;
+  sortOrder?: number;
 }
 
 // Dashboard

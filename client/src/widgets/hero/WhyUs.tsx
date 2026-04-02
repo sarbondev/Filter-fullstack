@@ -41,6 +41,18 @@ const content = {
       { icon: Award, title: 'Sertifikatlangan sifat', desc: "Barcha mahsulotlar xalqaro ISO va CE standartlariga javob beradi." },
     ],
   },
+  kz: {
+    title: 'Неліктен FilterSystem?',
+    subtitle: 'Ондаған жылдық сүзгілеу тәжірибесін заманауи өндіріс технологияларымен біріктіреміз',
+    features: [
+      { icon: Droplets, title: 'Су сүзгілері', desc: 'Таза және қауіпсіз ауыз су үшін кері осмос, УК, көмір сүзгілері.' },
+      { icon: Wind, title: 'Ауа сүзгілері', desc: 'HEPA, белсендірілген көмір және өнеркәсіптік ауа сүзгілеу жүйелері.' },
+      { icon: Factory, title: 'Өнеркәсіптік шешімдер', desc: 'Зауыттар мен ірі кәсіпорындар үшін арнайы сүзгілеу жүйелері.' },
+      { icon: Gauge, title: 'Жоғары тиімділік', desc: '99.9% ластағыштарды жою қабілеті бар сүзгілер.' },
+      { icon: Leaf, title: 'Экологиялық таза', desc: 'Тұрақты материалдар және қайта өңделетін сүзгі картридждері.' },
+      { icon: Award, title: 'Сертификатталған сапа', desc: 'Барлық өнімдер халықаралық ISO және CE стандарттарына сай.' },
+    ],
+  },
 };
 
 export function WhyUs({ locale }: { locale: Locale }) {

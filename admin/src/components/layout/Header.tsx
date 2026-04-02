@@ -63,6 +63,7 @@ export function Header() {
       flag: "\u{1F1F7}\u{1F1FA}",
     },
     { code: "uz", label: "O'zbek", flag: "\u{1F1FA}\u{1F1FF}" },
+    { code: "kz", label: "\u049A\u0430\u0437\u0430\u049B\u0448\u0430", flag: "\u{1F1F0}\u{1F1FF}" },
   ];
 
   const currentLang =

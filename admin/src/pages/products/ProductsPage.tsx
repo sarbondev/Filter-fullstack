@@ -9,14 +9,18 @@ import {
 } from '@/components/ui';
 import type { Product } from '@/lib/types';
 import { useLocale, tf } from '@/hooks/useLocale';
+import { useQueryParams } from '@/hooks/useQueryParams';
 import ProductForm from './ProductForm';
 
 export default function ProductsPage() {
   const { t } = useTranslation();
   const locale = useLocale();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('');
+  const { params, setParams } = useQueryParams();
+
+  const page = Number(params.page) || 1;
+  const search = params.search || '';
+  const category = params.category || '';
+
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -64,7 +68,7 @@ export default function ProductsPage() {
               placeholder={t('products.searchProducts')}
               icon={<Search className="h-4 w-4" />}
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              onChange={(e) => { setParams({ search: e.target.value || undefined, page: undefined }); }}
             />
           </div>
           <div className="w-48">
@@ -72,7 +76,7 @@ export default function ProductsPage() {
               placeholder={t('products.allCategories')}
               options={(categories ?? []).map((c) => ({ value: c.id, label: tf(c.name, locale) }))}
               value={category}
-              onChange={(e) => { setCategory(e.target.value); setPage(1); }}
+              onChange={(e) => { setParams({ category: e.target.value || undefined, page: undefined }); }}
             />
           </div>
         </div>
@@ -139,7 +143,7 @@ export default function ProductsPage() {
           emptyMessage={t('products.noProducts')}
         />
         {meta && (
-          <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={setPage} />
+          <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={(p) => setParams({ page: p > 1 ? String(p) : undefined })} />
         )}
       </Card>
 
@@ -160,7 +164,7 @@ export default function ProductsPage() {
       <Modal open={!!viewProduct} onClose={() => setViewProduct(null)} title={t('products.productDetails')} size="lg">
         {viewProduct && (
           <div className="space-y-4">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               <div>
                 <p className="text-xs text-slate-500">{t('products.nameEn')}</p>
                 <p className="font-medium">{viewProduct.name.en}</p>
@@ -173,8 +177,12 @@ export default function ProductsPage() {
                 <p className="text-xs text-slate-500">{t('products.nameUz')}</p>
                 <p className="font-medium">{viewProduct.name.uz}</p>
               </div>
+              <div>
+                <p className="text-xs text-slate-500">{t('products.nameKz')}</p>
+                <p className="font-medium">{viewProduct.name.kz}</p>
+              </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               <div>
                 <p className="text-xs text-slate-500">{t('products.descEn')}</p>
                 <p className="text-sm">{viewProduct.description.en}</p>
@@ -186,6 +194,10 @@ export default function ProductsPage() {
               <div>
                 <p className="text-xs text-slate-500">{t('products.descUz')}</p>
                 <p className="text-sm">{viewProduct.description.uz}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-500">{t('products.descKz')}</p>
+                <p className="text-sm">{viewProduct.description.kz}</p>
               </div>
             </div>
             <div className="grid grid-cols-4 gap-4 text-sm">

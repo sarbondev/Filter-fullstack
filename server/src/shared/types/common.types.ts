@@ -38,10 +38,11 @@ export interface AuthRequest extends Request {
   user?: JwtPayload;
 }
 
-export type Locale = "uz" | "ru" | "en";
+export type Locale = "uz" | "ru" | "en" | "kz";
 
 export interface TranslatedField {
   uz: string;
   ru: string;
   en: string;
+  kz: string;
 }

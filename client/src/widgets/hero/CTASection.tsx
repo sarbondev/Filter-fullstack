@@ -25,6 +25,12 @@ const content = {
     cta: 'Boshlash',
     phone: "Qo'ng'iroq qilish",
   },
+  kz: {
+    title: 'Сүзгілеу жүйеңізді жаңартуға дайынсыз ба?',
+    desc: 'Инженерлерімізден тегін кеңес алыңыз. Қажеттіліктеріңізге сай шешімді ұсынамыз.',
+    cta: 'Бастау',
+    phone: 'Қоңырау шалу',
+  },
 };
 
 export function CTASection({ locale }: { locale: Locale }) {

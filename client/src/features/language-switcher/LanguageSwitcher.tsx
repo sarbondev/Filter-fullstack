@@ -9,9 +9,10 @@ const languages: { code: Locale; label: string; flag: string }[] = [
   { code: "en", label: "English", flag: "🇬🇧" },
   { code: "ru", label: "Русский", flag: "🇷🇺" },
   { code: "uz", label: "O'zbekcha", flag: "🇺🇿" },
+  { code: "kz", label: "Қазақша", flag: "🇰🇿" },
 ];
 
-export function LanguageSwitcher({ currentLang }: { currentLang: Locale }) {
+export function LanguageSwitcher({ currentLang, transparent = false }: { currentLang: Locale; transparent?: boolean }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -39,12 +40,14 @@ export function LanguageSwitcher({ currentLang }: { currentLang: Locale }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors"
+        className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+          transparent
+            ? "bg-white/10 border-white/20 text-white hover:bg-white/20"
+            : "bg-slate-50 border-slate-200/60 text-slate-700 hover:bg-slate-100"
+        }`}
       >
-        <span className="hidden sm:inline">
-          {current.flag} {current.label}
-        </span>
-        <span className="sm:hidden">{current.flag}</span>
+        <div className="flex h-6 w-6 items-center justify-center text-base leading-none">{current.flag}</div>
+        <span className="hidden sm:inline text-[13px]">{current.label}</span>
       </button>
 
       <AnimatePresence>

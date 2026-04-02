@@ -9,6 +9,7 @@ import {
 import type { Order } from '@/lib/types';
 import { useAppSelector } from '@/hooks/store';
 import { useLocale } from '@/hooks/useLocale';
+import { useQueryParams } from '@/hooks/useQueryParams';
 
 const statusVariant: Record<string, 'default' | 'success' | 'warning' | 'danger' | 'info'> = {
   PENDING: 'warning', CONFIRMED: 'info', PROCESSING: 'info',
@@ -22,8 +23,9 @@ const paymentVariant: Record<string, 'default' | 'success' | 'warning' | 'danger
 export default function OrdersPage() {
   const { t } = useTranslation();
   const locale = useLocale();
-  const [page, setPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState('');
+  const { params, setParams } = useQueryParams();
+  const page = Number(params.page) || 1;
+  const statusFilter = params.status || '';
   const [viewOrder, setViewOrder] = useState<Order | null>(null);
   const user = useAppSelector((s) => s.auth.user);
 
@@ -89,7 +91,7 @@ export default function OrdersPage() {
             placeholder={t('orders.allStatuses')}
             options={statusOptions}
             value={statusFilter}
-            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+            onChange={(e) => { setParams({ status: e.target.value || undefined, page: undefined }); }}
           />
         </div>
       </div>
@@ -127,7 +129,7 @@ export default function OrdersPage() {
           keyExtractor={(o) => o.id}
           emptyMessage={t('orders.noOrders')}
         />
-        {meta && <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={setPage} />}
+        {meta && <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={(p) => setParams({ page: p > 1 ? String(p) : undefined })} />}
       </Card>
 
       {/* Order Detail Modal */}

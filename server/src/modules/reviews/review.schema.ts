@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { IReview } from './review.entity';
 
 const translatedFieldSchema = new Schema(
-  { uz: { type: String, required: true }, ru: { type: String, required: true }, en: { type: String, required: true } },
+  { uz: { type: String, required: true }, ru: { type: String, required: true }, en: { type: String, required: true }, kz: { type: String, required: true } },
   { _id: false },
 );
 

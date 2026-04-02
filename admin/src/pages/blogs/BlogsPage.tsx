@@ -11,6 +11,7 @@ import {
 } from '@/components/ui';
 import type { Blog } from '@/lib/types';
 import { useLocale, tf } from '@/hooks/useLocale';
+import { useQueryParams } from '@/hooks/useQueryParams';
 
 const blogSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -22,7 +23,9 @@ const blogSchema = z.object({
 export default function BlogsPage() {
   const { t } = useTranslation();
   const locale = useLocale();
-  const [page, setPage] = useState(1);
+  const { params, setParams } = useQueryParams();
+  const page = Number(params.page) || 1;
+  const setPage = (newPage: number) => setParams({ page: newPage === 1 ? undefined : String(newPage) });
   const { data: res, isLoading } = useGetBlogsQuery({ page, limit: 10 });
   const [createBlog, { isLoading: creating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: updating }] = useUpdateBlogMutation();

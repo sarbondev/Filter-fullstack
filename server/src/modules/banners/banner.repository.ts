@@ -12,16 +12,7 @@ export class BannerRepository {
   }
 
   async findActive(): Promise<IBanner[]> {
-    const now = new Date();
-    return BannerModel.find({
-      isActive: true,
-      $or: [
-        { startDate: { $exists: false }, endDate: { $exists: false } },
-        { startDate: { $lte: now }, endDate: { $gte: now } },
-        { startDate: { $lte: now }, endDate: { $exists: false } },
-        { startDate: { $exists: false }, endDate: { $gte: now } },
-      ],
-    })
+    return BannerModel.find({ isActive: true })
       .sort({ sortOrder: 1 })
       .lean<IBanner[]>();
   }

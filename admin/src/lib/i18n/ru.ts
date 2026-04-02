@@ -74,6 +74,8 @@ const ru = {
     blogs: 'Блог',
     adminPanel: 'Админ панель',
     filterSystem: 'Система фильтров',
+    partners: 'Партнёры',
+    industries: 'Отрасли',
     settings: 'Настройки',
   },
   dashboard: {
@@ -117,9 +119,11 @@ const ru = {
     nameEn: 'Название (EN)',
     nameRu: 'Название (RU)',
     nameUz: 'Название (UZ)',
+    nameKz: 'Название (KZ)',
     descEn: 'Описание (EN)',
     descRu: 'Описание (RU)',
     descUz: 'Описание (UZ)',
+    descKz: 'Описание (KZ)',
   },
   categories: {
     title: 'Категории',

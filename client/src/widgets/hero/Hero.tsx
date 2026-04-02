@@ -1,182 +1,314 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Play, Droplets, Wind, Gauge } from 'lucide-react';
-import type { Locale } from '@/shared/types';
+import { ArrowRight, ChevronLeft, ChevronRight, Droplets, Wind, Shield } from 'lucide-react';
+import type { Locale, Banner } from '@/shared/types';
 import type { Dictionary } from '@/shared/i18n/dictionaries/en';
+import { useGetBannersQuery } from '@/store/api/bannerApi';
+import { getImageUrl } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
+
+/* ─── Static fallback images ──────────────────────────────────────── */
+const STATIC_SLIDES = [
+  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80',
+  'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&q=80',
+  'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=1600&q=80',
+];
 
 interface HeroProps {
   locale: Locale;
   dict: Dictionary;
 }
 
+const AUTOPLAY_MS = 6000;
+
 export function Hero({ locale, dict }: HeroProps) {
+  const { data: banners, isLoading } = useGetBannersQuery();
+  const activeBanners = banners?.filter((b) => b.isActive) ?? [];
+  const hasBanners = activeBanners.length > 0;
+
+  if (isLoading) return <HeroSkeleton />;
+
+  // Build image list: from banners or fallback statics
+  const images = hasBanners
+    ? activeBanners.map((b) => getImageUrl(b.image))
+    : STATIC_SLIDES;
+
+  return <HeroCarousel images={images} locale={locale} dict={dict} />;
+}
+
+/* ═══════════════════════════════════════════════════════════════════ */
+/*  Unified Hero Carousel                                             */
+/* ═══════════════════════════════════════════════════════════════════ */
+
+function HeroCarousel({
+  images,
+  locale,
+  dict,
+}: {
+  images: string[];
+  locale: Locale;
+  dict: Dictionary;
+}) {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const count = images.length;
+  const progress = useMotionValue(0);
+  const progressWidth = useTransform(progress, [0, 1], ['0%', '100%']);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const frameRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const go = useCallback(
+    (idx: number) => {
+      progress.set(0);
+      setCurrent(idx);
+    },
+    [progress],
+  );
+
+  const next = useCallback(() => go((current + 1) % count), [go, current, count]);
+  const prev = useCallback(() => go((current - 1 + count) % count), [go, current, count]);
+
+  useEffect(() => {
+    if (count <= 1 || paused) return;
+    const start = Date.now();
+    frameRef.current = setInterval(() => {
+      progress.set(Math.min((Date.now() - start) / AUTOPLAY_MS, 1));
+    }, 30);
+    timerRef.current = setTimeout(() => {
+      if (frameRef.current) clearInterval(frameRef.current);
+      next();
+    }, AUTOPLAY_MS);
+    return () => {
+      if (frameRef.current) clearInterval(frameRef.current);
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [current, paused, count, next, progress]);
+
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white" />
-      <div className="absolute top-20 right-0 w-[500px] h-[500px] rounded-full bg-primary/[0.03] blur-[80px]" />
+    <section
+      className="relative w-full h-screen overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* ── Background images ── */}
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={images[current]}
+            alt="FilterSystem"
+            fill
+            priority={current === 0}
+            className="object-cover"
+            sizes="100vw"
+          />
+        </motion.div>
+      </AnimatePresence>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Text */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="inline-flex items-center gap-2 rounded-md bg-primary/[0.06] px-3 py-1 text-[13px] font-medium text-primary mb-6">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/10" />
+
+      {/* ── Content ── */}
+      <div className="relative z-10 flex h-full items-center">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+            {/* Left — text */}
+            <div className="lg:col-span-7">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.05 }}
+                className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur-sm px-4 py-1.5 mb-6"
+              >
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                FilterSystem Factory
-              </span>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-bold text-slate-900 leading-[1.1]">
-                {dict.hero.title}
-                <span className="block text-primary mt-2">
-                  {dict.hero.subtitle}
+                <span className="text-xs font-semibold text-white/90 tracking-wide uppercase">
+                  FilterSystem Factory
                 </span>
-              </h1>
+              </motion.div>
 
-              <p className="mt-6 text-base text-slate-500 max-w-lg leading-relaxed">
+              <motion.h1
+                initial={{ opacity: 0, y: 25 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.12 }}
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg"
+              >
+                {dict.hero.title}
+                <span className="block text-primary mt-1 drop-shadow-none">{dict.hero.subtitle}</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.22 }}
+                className="mt-5 text-[15px] sm:text-base text-white/70 max-w-md leading-relaxed"
+              >
                 {dict.hero.description}
-              </p>
-            </motion.div>
+              </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="mt-8 flex flex-wrap gap-3"
-            >
-              <Link href={`/${locale}/products`}>
-                <Button size="lg" icon={<ArrowRight className="h-4 w-4" />}>
-                  {dict.hero.shopNow}
-                </Button>
-              </Link>
-              <Link href={`/${locale}/categories`}>
-                <Button variant="outline" size="lg" icon={<Play className="h-4 w-4" />}>
-                  {dict.hero.viewCatalog}
-                </Button>
-              </Link>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.32 }}
+                className="mt-8 flex flex-wrap gap-3"
+              >
+                <Link href={`/${locale}/products`}>
+                  <Button size="lg" icon={<ArrowRight className="h-4 w-4" />}>
+                    {dict.hero.shopNow}
+                  </Button>
+                </Link>
+                <Link href={`/${locale}/categories`}>
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="text-white border border-white/25 hover:bg-white/15 hover:text-white backdrop-blur-sm"
+                  >
+                    {dict.hero.viewCatalog}
+                  </Button>
+                </Link>
+              </motion.div>
 
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mt-14 flex gap-10 sm:gap-14"
-            >
-              {[
-                { value: '500+', label: dict.hero.stats.products },
-                { value: '50K+', label: dict.hero.stats.customers },
-                { value: '99%', label: dict.hero.stats.satisfaction },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <div className="text-2xl sm:text-3xl font-bold text-slate-900">{stat.value}</div>
-                  <div className="mt-1 text-sm text-slate-400">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+                className="mt-12 flex gap-10 sm:gap-12"
+              >
+                {[
+                  { value: '500+', label: dict.hero.stats.products },
+                  { value: '50K+', label: dict.hero.stats.customers },
+                  { value: '99%', label: dict.hero.stats.satisfaction },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <div className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">{stat.value}</div>
+                    <div className="mt-0.5 text-xs text-white/50 uppercase tracking-wider">{stat.label}</div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Right — feature cards */}
+            <div className="hidden lg:flex lg:col-span-5 justify-end">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.4 }}
+                className="space-y-3 w-full max-w-[280px]"
+              >
+                {[
+                  { icon: Droplets, title: dict.hero.waterFilters, desc: dict.hero.waterFiltersCount, accent: 'bg-blue-500' },
+                  { icon: Wind, title: dict.hero.airFilters, desc: dict.hero.airFiltersCount, accent: 'bg-emerald-500' },
+                  { icon: Shield, title: dict.hero.efficiency, desc: '99.9%', accent: 'bg-amber-500' },
+                ].map((card, i) => (
+                  <motion.div
+                    key={card.title}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.45, delay: 0.5 + i * 0.08 }}
+                    className="flex items-center gap-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 px-4 py-3.5 transition-colors duration-200 hover:bg-white/[0.16]"
+                  >
+                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.accent}/20`}>
+                      <card.icon className="h-[18px] w-[18px] text-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-white truncate">{card.title}</div>
+                      <div className="text-xs text-white/50">{card.desc}</div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Bottom navigation ── */}
+      {count > 1 && (
+        <div className="absolute bottom-0 left-0 right-0 z-20">
+          <div className="h-[3px] bg-white/10">
+            <motion.div className="h-full bg-white/70" style={{ width: progressWidth }} />
           </div>
 
-          {/* Right Visual */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="hidden lg:block relative"
-          >
-            {/* Main image */}
-            <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-xl shadow-slate-200/40">
-              <Image
-                src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=800&q=80"
-                alt="Industrial filter system"
-                width={600}
-                height={500}
-                className="w-full h-[480px] object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
+          <div className="bg-black/30 backdrop-blur-md">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center justify-between h-12">
+                <div className="flex items-center gap-2.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => go(i)}
+                      aria-label={`Slide ${i + 1}`}
+                      className="relative h-2 rounded-full transition-all duration-500 overflow-hidden"
+                      style={{ width: i === current ? 28 : 8 }}
+                    >
+                      <span className="absolute inset-0 rounded-full bg-white/30" />
+                      {i === current && (
+                        <motion.span
+                          layoutId="active-dot"
+                          className="absolute inset-0 rounded-full bg-white"
+                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
 
-              {/* Overlay */}
-              <div className="absolute bottom-5 left-5 right-5">
-                <div className="rounded-xl bg-white/90 backdrop-blur-md p-4 shadow-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="flex -space-x-2">
-                      {['A', 'B', 'C'].map((letter) => (
-                        <div key={letter} className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-xs font-bold text-white border-2 border-white">
-                          {letter}
-                        </div>
-                      ))}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">{dict.hero.customersOverlay}</p>
-                      <div className="flex items-center gap-1 mt-0.5">
-                        {[1,2,3,4,5].map((i) => (
-                          <svg key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-                        ))}
-                        <span className="text-xs text-slate-500 ml-1">4.9/5</span>
-                      </div>
-                    </div>
-                  </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={prev}
+                    aria-label="Previous"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-white/60 transition-colors hover:text-white hover:bg-white/15"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={next}
+                    aria-label="Next"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-white/60 transition-colors hover:text-white hover:bg-white/15"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
 
-            {/* Floating cards */}
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-3 -right-3 rounded-xl bg-white shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-lg bg-blue-50 p-2">
-                  <Droplets className="h-4 w-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-[11px] text-slate-400">{dict.hero.waterFilters}</p>
-                  <p className="text-sm font-semibold text-slate-900">{dict.hero.waterFiltersCount}</p>
-                </div>
-              </div>
-            </motion.div>
+/* ═══════════════════════════════════════════════════════════════════ */
+/*  Skeleton                                                          */
+/* ═══════════════════════════════════════════════════════════════════ */
 
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              className="absolute -bottom-2 -left-4 rounded-xl bg-white shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-lg bg-emerald-50 p-2">
-                  <Wind className="h-4 w-4 text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-[11px] text-slate-400">{dict.hero.airFilters}</p>
-                  <p className="text-sm font-semibold text-slate-900">{dict.hero.airFiltersCount}</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              animate={{ y: [0, -5, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-              className="absolute top-1/2 -right-6 rounded-xl bg-white shadow-lg shadow-slate-200/50 border border-slate-100 px-4 py-3"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-lg bg-amber-50 p-2">
-                  <Gauge className="h-4 w-4 text-amber-600" />
-                </div>
-                <div>
-                  <p className="text-[11px] text-slate-400">{dict.hero.efficiency}</p>
-                  <p className="text-sm font-semibold text-slate-900">99.9%</p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
+function HeroSkeleton() {
+  return (
+    <section className="relative w-full h-screen bg-slate-100 animate-pulse">
+      <div className="absolute inset-0 bg-gradient-to-r from-slate-200/60 via-transparent to-transparent" />
+      <div className="relative z-10 flex h-full items-center">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl space-y-4">
+            <div className="h-5 w-40 rounded-full bg-slate-200" />
+            <div className="h-11 w-[440px] max-w-full rounded-lg bg-slate-200" />
+            <div className="h-11 w-[340px] max-w-full rounded-lg bg-slate-200/70" />
+            <div className="h-5 w-[380px] max-w-full rounded-lg bg-slate-200/50 mt-2" />
+            <div className="flex gap-3 mt-4">
+              <div className="h-11 w-36 rounded-lg bg-slate-200/60" />
+              <div className="h-11 w-36 rounded-lg bg-slate-200/40" />
+            </div>
+          </div>
         </div>
       </div>
     </section>

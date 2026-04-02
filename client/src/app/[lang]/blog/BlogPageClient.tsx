@@ -1,20 +1,21 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Eye, FileText } from 'lucide-react';
+import { Calendar, Eye, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Locale } from '@/shared/types';
 import type { Dictionary } from '@/shared/i18n/dictionaries/en';
 import { useGetBlogsQuery } from '@/store/api/blogApi';
 import { t, getImageUrl } from '@/shared/lib/utils';
 import { Skeleton, Button } from '@/shared/ui';
+import { useQueryParams } from '@/shared/hooks';
 
 interface Props { locale: Locale; dict: Dictionary }
 
 export function BlogPageClient({ locale, dict }: Props) {
-  const [page, setPage] = useState(1);
+  const { params, setParams } = useQueryParams();
+  const page = Number(params.page) || 1;
   const { data, isLoading } = useGetBlogsQuery({ page, limit: 12 });
 
   const blogs = data?.data ?? [];
@@ -94,9 +95,9 @@ export function BlogPageClient({ locale, dict }: Props) {
 
           {meta && meta.totalPages > 1 && (
             <div className="mt-12 flex items-center justify-center gap-3">
-              <Button variant="outline" disabled={page <= 1} onClick={() => setPage(page - 1)}>{'\u2190'}</Button>
+              <Button variant="outline" disabled={page <= 1} onClick={() => setParams({ page: page - 1 <= 1 ? undefined : String(page - 1) })}><ChevronLeft className="h-4 w-4" /></Button>
               <span className="text-sm text-slate-500">{page} / {meta.totalPages}</span>
-              <Button variant="outline" disabled={page >= meta.totalPages} onClick={() => setPage(page + 1)}>{'\u2192'}</Button>
+              <Button variant="outline" disabled={page >= meta.totalPages} onClick={() => setParams({ page: String(page + 1) })}><ChevronRight className="h-4 w-4" /></Button>
             </div>
           )}
         </>

@@ -11,6 +11,8 @@ import UsersPage from '@/pages/users/UsersPage';
 import ReviewsPage from '@/pages/reviews/ReviewsPage';
 import BannersPage from '@/pages/banners/BannersPage';
 import BlogsPage from '@/pages/blogs/BlogsPage';
+import PartnersPage from '@/pages/partners/PartnersPage';
+import IndustriesPage from '@/pages/industries/IndustriesPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 
 function AdminOnly({ children }: { children: React.ReactNode }) {
@@ -35,6 +37,8 @@ export default function App() {
         <Route path="/users" element={<AdminOnly><UsersPage /></AdminOnly>} />
         <Route path="/banners" element={<AdminOnly><BannersPage /></AdminOnly>} />
         <Route path="/blogs" element={<AdminOnly><BlogsPage /></AdminOnly>} />
+        <Route path="/partners" element={<AdminOnly><PartnersPage /></AdminOnly>} />
+        <Route path="/industries" element={<AdminOnly><IndustriesPage /></AdminOnly>} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -6,7 +6,7 @@ type Locale = keyof TranslatedField;
 export function useLocale(): Locale {
   const { i18n } = useTranslation();
   const lang = i18n.language as Locale;
-  return ['uz', 'ru', 'en'].includes(lang) ? lang : 'ru';
+  return ['uz', 'ru', 'en', 'kz'].includes(lang) ? lang : 'ru';
 }
 
 export function tf(field: TranslatedField | undefined | null, locale: Locale): string {

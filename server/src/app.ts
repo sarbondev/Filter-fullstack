@@ -19,6 +19,8 @@ import dashboardRoutes from "./modules/dashboard/dashboard.routes";
 import seedRoutes from "./modules/auth/seed.routes";
 import uploadRoutes from "./modules/upload/upload.routes";
 import blogRoutes from "./modules/blogs/blog.routes";
+import partnerRoutes from "./modules/partners/partner.routes";
+import industryRoutes from "./modules/industries/industry.routes";
 
 export const createApp = (): Application => {
   const app = express();
@@ -85,6 +87,8 @@ export const createApp = (): Application => {
   app.use(`${api}/seed`, seedRoutes);
   app.use(`${api}/upload`, uploadRoutes);
   app.use(`${api}/blogs`, blogRoutes);
+  app.use(`${api}/partners`, partnerRoutes);
+  app.use(`${api}/industries`, industryRoutes);
   // ── 404 ────────────────────────────────────────────────────────────────────
   app.use((_req: Request, res: Response) => {
     res.status(404).json({ success: false, message: "Route not found" });
