@@ -102,7 +102,6 @@ const ru = {
     allCategories: 'Все категории',
     noProducts: 'Товары не найдены',
     sku: 'Артикул',
-    shortDescription: 'Краткое описание',
     discountPrice: 'Цена со скидкой',
     tags: 'Теги',
     images: 'Изображения',

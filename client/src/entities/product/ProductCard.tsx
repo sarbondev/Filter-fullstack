@@ -127,10 +127,7 @@ export function ProductCard({
               {t(product.name, locale)}
             </h3>
 
-            {/* Description */}
-            <p className="mt-1 text-xs text-slate-500 line-clamp-2 h-8 leading-4">
-              {t(product.shortDescription, locale)}
-            </p>
+
 
             {/* Price */}
             <div className="mt-auto pt-3 flex items-baseline gap-2">

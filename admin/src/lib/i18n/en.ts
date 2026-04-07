@@ -102,7 +102,6 @@ const en = {
     allCategories: 'All Categories',
     noProducts: 'No products found',
     sku: 'SKU',
-    shortDescription: 'Short Description',
     discountPrice: 'Discount Price',
     tags: 'Tags',
     images: 'Images',

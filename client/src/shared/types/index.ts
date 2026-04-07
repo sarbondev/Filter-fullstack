@@ -51,7 +51,6 @@ export interface Product {
   id: string;
   name: TranslatedField;
   description: TranslatedField;
-  shortDescription: TranslatedField;
   slug: string;
   sku: string;
   price: number;

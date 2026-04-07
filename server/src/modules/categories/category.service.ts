@@ -1,10 +1,13 @@
-import { CategoryRepository } from './category.repository';
-import { CategoryResponse, toCategoryResponse } from './category.entity';
-import { CreateCategoryDto, UpdateCategoryDto } from './category.schema';
-import { NotFoundError, ConflictError } from '../../shared/middleware/error-handler.middleware';
-import { deleteFile } from '../upload/upload.service';
-import { geminiService } from '../../shared/services/gemini.service';
-import { emitToAll } from '../../shared/services/socket.service';
+import { CategoryRepository } from "./category.repository";
+import { CategoryResponse, toCategoryResponse } from "./category.entity";
+import { CreateCategoryDto, UpdateCategoryDto } from "./category.schema";
+import {
+  NotFoundError,
+  ConflictError,
+} from "../../shared/middleware/error-handler.middleware";
+import { deleteFile } from "../upload/upload.service";
+import { geminiService } from "../../shared/services/gemini.service";
+import { emitToAll } from "../../shared/services/socket.service";
 
 export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
@@ -13,15 +16,15 @@ export class CategoryService {
     return text
       .toLowerCase()
       .trim()
-      .replace(/[^\w\s-]/g, '')
-      .replace(/[\s_]+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   }
 
   private async generateUniqueSlug(name: string): Promise<string> {
     let slug = this.slugify(name);
-    if (!slug) slug = 'category';
+    if (!slug) slug = "category";
     let candidate = slug;
     let counter = 0;
     while (await this.categoryRepository.findBySlug(candidate)) {
@@ -32,10 +35,12 @@ export class CategoryService {
   }
 
   async create(dto: CreateCategoryDto): Promise<CategoryResponse> {
-    const slug = dto.slug || await this.generateUniqueSlug(dto.name);
+    const slug = dto.slug || (await this.generateUniqueSlug(dto.name));
 
-    const { name, description } = await geminiService.translateWithDescription(dto.name);
-
+    const { name, description } = await geminiService.translateWithDescription(
+      dto.name,
+      "e-commerce product category",
+    );
     const category = await this.categoryRepository.create({
       slug,
       image: dto.image,
@@ -47,7 +52,7 @@ export class CategoryService {
     } as any);
 
     const response = toCategoryResponse(category);
-    emitToAll('category:created', response);
+    emitToAll("category:created", response);
     return response;
   }
 
@@ -59,13 +64,13 @@ export class CategoryService {
 
   async findOne(id: string): Promise<CategoryResponse> {
     const category = await this.categoryRepository.findById(id);
-    if (!category) throw new NotFoundError('Category');
+    if (!category) throw new NotFoundError("Category");
     return toCategoryResponse(category);
   }
 
   async findBySlug(slug: string): Promise<CategoryResponse> {
     const category = await this.categoryRepository.findBySlug(slug);
-    if (!category) throw new NotFoundError('Category');
+    if (!category) throw new NotFoundError("Category");
     return toCategoryResponse(category);
   }
 
@@ -93,7 +98,7 @@ export class CategoryService {
 
   async update(id: string, dto: UpdateCategoryDto): Promise<CategoryResponse> {
     const existing = await this.categoryRepository.findById(id);
-    if (!existing) throw new NotFoundError('Category');
+    if (!existing) throw new NotFoundError("Category");
 
     const updateData: Record<string, unknown> = {};
     if (dto.name && !dto.slug) {
@@ -102,7 +107,11 @@ export class CategoryService {
       updateData.slug = dto.slug;
     }
     if (dto.image !== undefined) updateData.image = dto.image;
-    if (dto.image !== undefined && existing.image && dto.image !== existing.image) {
+    if (
+      dto.image !== undefined &&
+      existing.image &&
+      dto.image !== existing.image
+    ) {
       deleteFile(existing.image);
     }
     if (dto.parent !== undefined) updateData.parent = dto.parent;
@@ -110,27 +119,29 @@ export class CategoryService {
     if (dto.sortOrder !== undefined) updateData.sortOrder = dto.sortOrder;
 
     if (dto.name) {
-      const { name, description } = await geminiService.translateWithDescription(dto.name);
+      const { name, description } =
+        await geminiService.translateWithDescription(dto.name);
       updateData.name = name;
       updateData.description = description;
     }
 
     const updated = await this.categoryRepository.update(id, updateData as any);
-    if (!updated) throw new NotFoundError('Category');
+    if (!updated) throw new NotFoundError("Category");
     const response = toCategoryResponse(updated);
-    emitToAll('category:updated', response);
+    emitToAll("category:updated", response);
     return response;
   }
 
   async remove(id: string): Promise<void> {
     const category = await this.categoryRepository.findById(id);
-    if (!category) throw new NotFoundError('Category');
+    if (!category) throw new NotFoundError("Category");
 
     const childCount = await this.categoryRepository.countByParent(id);
-    if (childCount > 0) throw new ConflictError('Cannot delete category with subcategories');
+    if (childCount > 0)
+      throw new ConflictError("Cannot delete category with subcategories");
 
     if (category.image) deleteFile(category.image);
     await this.categoryRepository.delete(id);
-    emitToAll('category:deleted', { id });
+    emitToAll("category:deleted", { id });
   }
 }

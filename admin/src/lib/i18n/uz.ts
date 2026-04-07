@@ -102,7 +102,6 @@ const uz = {
     allCategories: 'Barcha kategoriyalar',
     noProducts: 'Mahsulotlar topilmadi',
     sku: 'Artikul',
-    shortDescription: 'Qisqa tavsif',
     discountPrice: 'Chegirma narxi',
     tags: 'Teglar',
     images: 'Rasmlar',

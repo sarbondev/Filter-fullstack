@@ -102,7 +102,6 @@ const kz = {
     allCategories: 'Барлық санаттар',
     noProducts: 'Өнімдер табылмады',
     sku: 'Артикул',
-    shortDescription: 'Қысқа сипаттама',
     discountPrice: 'Жеңілдік бағасы',
     tags: 'Тегтер',
     images: 'Суреттер',

@@ -120,11 +120,9 @@ router.post("/retranslate", async (_req: Request, res: Response) => {
     try {
       const source = prod.name.en || prod.name.uz || prod.name.ru;
       const descSource = prod.description.en || prod.description.uz || prod.description.ru;
-      const shortSource = prod.shortDescription.en || prod.shortDescription.uz || prod.shortDescription.ru;
       if (!source) continue;
 
       const fields: Record<string, string> = { name: source, description: descSource };
-      if (shortSource) fields.shortDescription = shortSource;
       if (prod.tags?.en || prod.tags?.uz) fields.tags = prod.tags.en || prod.tags.uz || prod.tags.ru;
 
       const translations = await geminiService.translate(fields, {
@@ -132,7 +130,7 @@ router.post("/retranslate", async (_req: Request, res: Response) => {
       });
       prod.name = translations.name as any;
       prod.description = translations.description as any;
-      if (translations.shortDescription) prod.shortDescription = translations.shortDescription as any;
+      if (translations.tags) prod.tags = translations.tags as any;
       if (translations.tags) prod.tags = translations.tags as any;
       await prod.save();
       count++;

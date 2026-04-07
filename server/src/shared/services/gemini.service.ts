@@ -57,7 +57,8 @@ export class GeminiService {
         return result.response.text();
       } catch (error) {
         const msg = error instanceof Error ? error.message : String(error);
-        const isRateLimit = msg.includes("429") || msg.includes("Too Many Requests");
+        const isRateLimit =
+          msg.includes("429") || msg.includes("Too Many Requests");
         if (isRateLimit && attempt < GeminiService.MAX_RETRIES) {
           const delay = attempt * 5000;
           logger.warn({ attempt, delay }, "Gemini rate limited — retrying");
@@ -104,11 +105,14 @@ export class GeminiService {
     const fieldsJson = JSON.stringify(fields, null, 2);
 
     const expectedStructure = Object.keys(fields).reduce(
-      (acc, key) => ({ ...acc, [key]: { uz: "...", ru: "...", en: "...", kz: "..." } }),
+      (acc, key) => ({
+        ...acc,
+        [key]: { uz: "...", ru: "...", en: "...", kz: "..." },
+      }),
       {} as Record<string, unknown>,
     );
 
-    const prompt = `You are a professional multilingual translator and editor for a filter-system factory e-commerce platform.
+    const prompt = `You are a professional multilingual translator and editor for an e-commerce platform.
 Context: ${context}
 
 Your task: Auto-detect the input language, FIX any spelling/grammar mistakes in the original text, then provide corrected and properly translated versions in all four languages:
@@ -122,7 +126,7 @@ ${fieldsJson}
 
 Rules:
 1. Auto-detect the source language from the input text
-2. ALWAYS fix and improve the input: correct spelling mistakes, grammar errors, incomplete words, and awkward phrasing — return a clean, proper version for ALL three languages including the source language
+2. Preserve the input text EXACTLY as given — do NOT change, fix, or improve it. Only translate it into the other languages as-is. Minor typo fix is allowed ONLY if a letter is clearly doubled or missing.
 3. Keep brand names, model numbers, technical specs, measurements, and proper nouns unchanged across all languages
 4. Use natural, fluent, professional language appropriate for ${context}
 5. If input is an array, join items with a comma into one translated string per language
@@ -171,17 +175,19 @@ ${JSON.stringify(expectedStructure, null, 2)}`;
    */
   async translateWithDescription(
     name: string,
-    context = "filter-system factory product category",
+    context = "e-commerce product category",
   ): Promise<{ name: TranslatedField; description: TranslatedField }> {
-    const prompt = `You are a professional multilingual content writer for a filter-system factory e-commerce platform.
+    const prompt = `You are a professional multilingual content writer for an e-commerce platform.
 Context: ${context}
 
-Given this category name (auto-detect language, fix any spelling/grammar):
+Given this category name:
 "${name}"
 
 Tasks:
-1. Fix and correct the name, then translate it into all 4 languages
-2. Generate a short professional 1-2 sentence description for this category, in all 4 languages
+1. Detect the language of the input name
+2. Use the input name AS-IS as the base — do NOT change, replace, or "correct" it unless there is an obvious typo (e.g. double letters, missing letter). Preserve the original meaning and word exactly.
+3. Translate that exact name into the other 3 languages
+4. Generate a short professional 1-2 sentence description for this category, in all 4 languages
 
 Languages:
 - Uzbek (uz) — Latin script only
@@ -189,7 +195,12 @@ Languages:
 - English (en)
 - Kazakh (kz) — Cyrillic script
 
-Respond ONLY with valid JSON:
+Rules:
+- The name in the detected source language must match the input word exactly
+- Never substitute a different word, even if you think a synonym is better
+- Never translate the name back into the source language with a different word
+
+Respond ONLY with valid JSON, no markdown, no extra text:
 {
   "name": { "uz": "...", "ru": "...", "en": "...", "kz": "..." },
   "description": { "uz": "...", "ru": "...", "en": "...", "kz": "..." }
@@ -198,12 +209,18 @@ Respond ONLY with valid JSON:
     try {
       const responseText = await this.generateWithRetry(prompt);
       logger.debug({ responseText }, "Gemini category response");
-      const parsed = JSON.parse(responseText) as { name: TranslatedField; description: TranslatedField };
+      const parsed = JSON.parse(responseText) as {
+        name: TranslatedField;
+        description: TranslatedField;
+      };
       logger.info({ name, context }, "Gemini: category translation successful");
       return parsed;
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : String(error);
-      logger.error({ error: errMsg, name, context }, "Gemini category translation failed — using fallback");
+      logger.error(
+        { error: errMsg, name, context },
+        "Gemini category translation failed — using fallback",
+      );
       return {
         name: { uz: name, ru: name, en: name, kz: name },
         description: { uz: name, ru: name, en: name, kz: name },

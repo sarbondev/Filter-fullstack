@@ -111,14 +111,7 @@ export function Navbar({ locale, dict }: NavbarProps) {
             {/* Logo + Nav */}
             <div className="flex items-center gap-8">
               <Link href={`/${locale}`} className="flex items-center gap-2.5">
-                <div className="rounded-lg bg-primary p-2">
-                  <Filter className="h-4.5 w-4.5 text-white" />
-                </div>
-                <span
-                  className={`text-lg font-bold tracking-tight transition-colors duration-300 ${logoText}`}
-                >
-                  Filter<span className="text-primary">System</span>
-                </span>
+               <img src="/logo.png" alt="FilterSystem Logo" />
               </Link>
 
               {/* Desktop Nav */}
@@ -185,6 +178,13 @@ export function Navbar({ locale, dict }: NavbarProps) {
                         </div>
                         <div className="py-1">
                           <Link
+                            href={`/${locale}/profile`}
+                            className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
+                          >
+                            <User className="h-4 w-4 text-slate-400" />
+                            {dict.settings.profile}
+                          </Link>
+                          <Link
                             href={`/${locale}/orders`}
                             className="flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50 transition-colors"
                           >
@@ -221,6 +221,17 @@ export function Navbar({ locale, dict }: NavbarProps) {
                     className={`h-4 w-4 ${transparent ? "text-white/60" : "text-slate-400"}`}
                   />
                   {dict.auth.login}
+                </Link>
+              )}
+
+              {/* User Profile Icon */}
+              {auth.user && (
+                <Link
+                  href={`/${locale}/profile`}
+                  className={`relative flex items-center justify-center rounded-lg p-2.5 transition-colors duration-200 ${iconBtn}`}
+                  title={dict.settings.profile}
+                >
+                  <User className="h-5 w-5" />
                 </Link>
               )}
 
@@ -314,6 +325,13 @@ export function Navbar({ locale, dict }: NavbarProps) {
               </Link>
               {auth.user ? (
                 <>
+                  <Link
+                    href={`/${locale}/profile`}
+                    className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    <User className="h-4 w-4 text-slate-400" />
+                    {dict.settings.profile}
+                  </Link>
                   <Link
                     href={`/${locale}/orders`}
                     className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"

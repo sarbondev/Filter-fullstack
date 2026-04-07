@@ -10,7 +10,6 @@ import { useLocale, tf } from '@/hooks/useLocale';
 const productSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
-  shortDescription: z.string().min(1, 'Short description is required'),
   price: z.number().min(0, 'Price must be positive'),
   discountPercent: z.number().min(0).max(100).optional(),
   category: z.string().min(1, 'Category is required'),
@@ -31,7 +30,6 @@ export default function ProductForm({ product, onSuccess }: Props) {
   const [form, setForm] = useState({
     name: tf(product?.name, locale),
     description: tf(product?.description, locale),
-    shortDescription: tf(product?.shortDescription, locale),
     price: product?.price ?? 0,
     discountPercent: product?.discountPercent ?? 0,
     category: typeof product?.category === 'string'
@@ -84,7 +82,6 @@ export default function ProductForm({ product, onSuccess }: Props) {
         // Only include translatable fields if they actually changed
         if (updateData.name === tf(product.name, locale)) delete updateData.name;
         if (updateData.description === tf(product.description, locale)) delete updateData.description;
-        if (updateData.shortDescription === tf(product.shortDescription, locale)) delete updateData.shortDescription;
         if ((updateData.tags ?? '') === tf(product.tags, locale)) delete updateData.tags;
         await update({ id: product.id, data: updateData }).unwrap();
       } else {
@@ -102,7 +99,6 @@ export default function ProductForm({ product, onSuccess }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
       <Input label={t('common.name')} value={form.name} onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder={t('products.enterAnyLanguage')} />
-      <Input label={t('products.shortDescription')} value={form.shortDescription} onChange={(e) => set('shortDescription', e.target.value)} error={errors.shortDescription} placeholder={t('products.enterAnyLanguage')} />
       <Textarea label={t('common.description')} value={form.description} onChange={(e) => set('description', e.target.value)} error={errors.description} placeholder={t('products.enterAnyLanguage')} />
       <div className="grid grid-cols-2 gap-4">
         <Input label={t('common.price')} type="number" value={form.price} onChange={(e) => set('price', Number(e.target.value))} error={errors.price} />

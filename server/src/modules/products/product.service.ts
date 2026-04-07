@@ -58,7 +58,6 @@ export class ProductService {
       {
         name: dto.name,
         description: dto.description,
-        shortDescription: dto.shortDescription,
         ...(dto.tags ? { tags: dto.tags } : {}),
       },
       {
@@ -90,7 +89,6 @@ export class ProductService {
       isFeatured: dto.isFeatured,
       name: translations.name,
       description: translations.description,
-      shortDescription: translations.shortDescription,
       ...(dto.tags && translations.tags?.uz ? { tags: translations.tags } : {}),
       specifications: translatedSpecs,
     } as any);
@@ -208,8 +206,6 @@ export class ProductService {
     const fieldsToTranslate: Record<string, string> = {};
     if (dto.name) fieldsToTranslate.name = dto.name;
     if (dto.description) fieldsToTranslate.description = dto.description;
-    if (dto.shortDescription)
-      fieldsToTranslate.shortDescription = dto.shortDescription;
     if (dto.tags) fieldsToTranslate.tags = dto.tags;
 
     if (Object.keys(fieldsToTranslate).length > 0) {

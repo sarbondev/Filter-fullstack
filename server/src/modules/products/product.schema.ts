@@ -24,7 +24,6 @@ const productMongoSchema = new Schema<IProduct>(
   {
     name: { type: translatedFieldSchema, required: true },
     description: { type: translatedFieldSchema, required: true },
-    shortDescription: { type: translatedFieldSchema, required: true },
     slug: {
       type: String,
       required: true,
@@ -77,7 +76,6 @@ const specificationInputSchema = z.object({
 export const createProductSchema = z.object({
   name: z.string().min(1).max(300),
   description: z.string().min(1).max(5000),
-  shortDescription: z.string().min(1).max(500),
   slug: z.string().max(300).optional(),
   sku: z.string().max(50).optional(),
   price: z.number().min(0),

@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { Filter, Mail, Phone, MapPin } from 'lucide-react';
-import type { Locale } from '@/shared/types';
-import type { Dictionary } from '@/shared/i18n/dictionaries/en';
+import Link from "next/link";
+import { Filter, Mail, Phone, MapPin } from "lucide-react";
+import type { Locale } from "@/shared/types";
+import type { Dictionary } from "@/shared/i18n/dictionaries/en";
 
 interface FooterProps {
   locale: Locale;
@@ -15,13 +15,10 @@ export function Footer({ locale, dict }: FooterProps) {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="rounded-lg bg-primary p-2">
-                <Filter className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-lg font-bold text-white tracking-tight">FilterSystem</span>
-            </div>
-            <p className="text-sm leading-relaxed text-slate-500">{dict.footer.description}</p>
+            <img src="/logo.png" alt="FilterSystem Logo" />
+            <p className="text-sm leading-relaxed text-slate-500">
+              {dict.footer.description}
+            </p>
             <div className="mt-6 space-y-2.5">
               <div className="flex items-center gap-3 text-sm">
                 <MapPin className="h-4 w-4 text-slate-500 flex-shrink-0" />
@@ -40,29 +37,66 @@ export function Footer({ locale, dict }: FooterProps) {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-300">{dict.footer.quickLinks}</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-300">
+              {dict.footer.quickLinks}
+            </h3>
             <ul className="space-y-2.5">
-              <li><Link href={`/${locale}`} className="text-sm hover:text-white transition-colors">{dict.nav.home}</Link></li>
-              <li><Link href={`/${locale}/products`} className="text-sm hover:text-white transition-colors">{dict.nav.products}</Link></li>
-              <li><Link href={`/${locale}/categories`} className="text-sm hover:text-white transition-colors">{dict.nav.categories}</Link></li>
+              <li>
+                <Link
+                  href={`/${locale}`}
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  {dict.nav.home}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/products`}
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  {dict.nav.products}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/categories`}
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  {dict.nav.categories}
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-300">{dict.footer.support}</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-300">
+              {dict.footer.support}
+            </h3>
             <ul className="space-y-2.5">
-              <li><span className="text-sm">{dict.footer.faq}</span></li>
-              <li><span className="text-sm">{dict.footer.shippingInfo}</span></li>
-              <li><span className="text-sm">{dict.footer.returns}</span></li>
-              <li><span className="text-sm">{dict.footer.contactUs}</span></li>
+              <li>
+                <span className="text-sm">{dict.footer.faq}</span>
+              </li>
+              <li>
+                <span className="text-sm">{dict.footer.shippingInfo}</span>
+              </li>
+              <li>
+                <span className="text-sm">{dict.footer.returns}</span>
+              </li>
+              <li>
+                <span className="text-sm">{dict.footer.contactUs}</span>
+              </li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-300">{dict.footer.followUs}</h3>
-            <p className="text-sm mb-4 text-slate-500">{dict.footer.newsletter}</p>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-300">
+              {dict.footer.followUs}
+            </h3>
+            <p className="text-sm mb-4 text-slate-500">
+              {dict.footer.newsletter}
+            </p>
             <div className="flex gap-2">
               <input
                 type="email"

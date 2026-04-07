@@ -1,5 +1,5 @@
-import { Document, Types } from 'mongoose';
-import { TranslatedField } from '../../shared/types/common.types';
+import { Document, Types } from "mongoose";
+import { TranslatedField } from "../../shared/types/common.types";
 
 export interface ISpecification {
   key: TranslatedField;
@@ -10,7 +10,6 @@ export interface IProduct extends Document {
   _id: Types.ObjectId;
   name: TranslatedField;
   description: TranslatedField;
-  shortDescription: TranslatedField;
   slug: string;
   sku: string;
   price: number;
@@ -31,7 +30,6 @@ export interface ProductResponse {
   id: string;
   name: TranslatedField;
   description: TranslatedField;
-  shortDescription: TranslatedField;
   slug: string;
   sku: string;
   price: number;
@@ -52,7 +50,6 @@ export const toProductResponse = (product: IProduct): ProductResponse => ({
   id: String(product._id),
   name: product.name,
   description: product.description,
-  shortDescription: product.shortDescription,
   slug: product.slug,
   sku: product.sku,
   price: product.price,
@@ -60,9 +57,12 @@ export const toProductResponse = (product: IProduct): ProductResponse => ({
   discountPrice: product.discountPercent
     ? Math.round(product.price * (1 - product.discountPercent / 100))
     : undefined,
-  category: product.category && typeof product.category === 'object' && 'name' in product.category
-    ? product.category as unknown as Record<string, unknown>
-    : String(product.category),
+  category:
+    product.category &&
+    typeof product.category === "object" &&
+    "name" in product.category
+      ? (product.category as unknown as Record<string, unknown>)
+      : String(product.category),
   images: product.images,
   specifications: product.specifications,
   tags: product.tags,
