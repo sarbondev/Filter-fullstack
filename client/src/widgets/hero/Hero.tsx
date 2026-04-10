@@ -1,21 +1,33 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import Image from 'next/image';
-import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight, Droplets, Wind, Shield } from 'lucide-react';
-import type { Locale, Banner } from '@/shared/types';
-import type { Dictionary } from '@/shared/i18n/dictionaries/en';
-import { useGetBannersQuery } from '@/store/api/bannerApi';
-import { getImageUrl } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Droplets,
+  Wind,
+  Shield,
+} from "lucide-react";
+import type { Locale } from "@/shared/types";
+import type { Dictionary } from "@/shared/i18n/dictionaries/en";
+import { useGetBannersQuery } from "@/store/api/bannerApi";
+import { getImageUrl } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui";
 
 /* ─── Static fallback images ──────────────────────────────────────── */
 const STATIC_SLIDES = [
-  'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80',
-  'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&q=80',
-  'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=1600&q=80',
+  "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1600&q=80",
+  "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1600&q=80",
+  "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=1600&q=80",
 ];
 
 interface HeroProps {
@@ -57,7 +69,7 @@ function HeroCarousel({
   const [paused, setPaused] = useState(false);
   const count = images.length;
   const progress = useMotionValue(0);
-  const progressWidth = useTransform(progress, [0, 1], ['0%', '100%']);
+  const progressWidth = useTransform(progress, [0, 1], ["0%", "100%"]);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const frameRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -69,8 +81,14 @@ function HeroCarousel({
     [progress],
   );
 
-  const next = useCallback(() => go((current + 1) % count), [go, current, count]);
-  const prev = useCallback(() => go((current - 1 + count) % count), [go, current, count]);
+  const next = useCallback(
+    () => go((current + 1) % count),
+    [go, current, count],
+  );
+  const prev = useCallback(
+    () => go((current - 1 + count) % count),
+    [go, current, count],
+  );
 
   useEffect(() => {
     if (count <= 1 || paused) return;
@@ -144,7 +162,9 @@ function HeroCarousel({
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-white leading-[1.1] tracking-tight drop-shadow-lg"
               >
                 {dict.hero.title}
-                <span className="block text-primary mt-1 drop-shadow-none">{dict.hero.subtitle}</span>
+                <span className="block text-primary mt-1 drop-shadow-none">
+                  {dict.hero.subtitle}
+                </span>
               </motion.h1>
 
               <motion.p
@@ -177,25 +197,6 @@ function HeroCarousel({
                   </Button>
                 </Link>
               </motion.div>
-
-              {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.45 }}
-                className="mt-12 flex gap-10 sm:gap-12"
-              >
-                {[
-                  { value: '500+', label: dict.hero.stats.products },
-                  { value: '50K+', label: dict.hero.stats.customers },
-                  { value: '99%', label: dict.hero.stats.satisfaction },
-                ].map((stat) => (
-                  <div key={stat.label}>
-                    <div className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">{stat.value}</div>
-                    <div className="mt-0.5 text-xs text-white/50 uppercase tracking-wider">{stat.label}</div>
-                  </div>
-                ))}
-              </motion.div>
             </div>
 
             {/* Right — feature cards */}
@@ -207,9 +208,24 @@ function HeroCarousel({
                 className="space-y-3 w-full max-w-[280px]"
               >
                 {[
-                  { icon: Droplets, title: dict.hero.waterFilters, desc: dict.hero.waterFiltersCount, accent: 'bg-blue-500' },
-                  { icon: Wind, title: dict.hero.airFilters, desc: dict.hero.airFiltersCount, accent: 'bg-emerald-500' },
-                  { icon: Shield, title: dict.hero.efficiency, desc: '99.9%', accent: 'bg-amber-500' },
+                  {
+                    icon: Droplets,
+                    title: dict.hero.waterFilters,
+                    desc: dict.hero.waterFiltersCount,
+                    accent: "bg-blue-500",
+                  },
+                  {
+                    icon: Wind,
+                    title: dict.hero.airFilters,
+                    desc: dict.hero.airFiltersCount,
+                    accent: "bg-emerald-500",
+                  },
+                  {
+                    icon: Shield,
+                    title: dict.hero.efficiency,
+                    desc: "99.9%",
+                    accent: "bg-amber-500",
+                  },
                 ].map((card, i) => (
                   <motion.div
                     key={card.title}
@@ -218,11 +234,15 @@ function HeroCarousel({
                     transition={{ duration: 0.45, delay: 0.5 + i * 0.08 }}
                     className="flex items-center gap-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/10 px-4 py-3.5 transition-colors duration-200 hover:bg-white/[0.16]"
                   >
-                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.accent}/20`}>
+                    <div
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${card.accent}/20`}
+                    >
                       <card.icon className="h-[18px] w-[18px] text-white" />
                     </div>
                     <div className="min-w-0">
-                      <div className="text-sm font-semibold text-white truncate">{card.title}</div>
+                      <div className="text-sm font-semibold text-white truncate">
+                        {card.title}
+                      </div>
                       <div className="text-xs text-white/50">{card.desc}</div>
                     </div>
                   </motion.div>
@@ -237,7 +257,10 @@ function HeroCarousel({
       {count > 1 && (
         <div className="absolute bottom-0 left-0 right-0 z-20">
           <div className="h-[3px] bg-white/10">
-            <motion.div className="h-full bg-white/70" style={{ width: progressWidth }} />
+            <motion.div
+              className="h-full bg-white/70"
+              style={{ width: progressWidth }}
+            />
           </div>
 
           <div className="bg-black/30 backdrop-blur-md">
@@ -257,7 +280,11 @@ function HeroCarousel({
                         <motion.span
                           layoutId="active-dot"
                           className="absolute inset-0 rounded-full bg-white"
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 380,
+                            damping: 30,
+                          }}
                         />
                       )}
                     </button>
